@@ -8,7 +8,7 @@ Squash App is a modern application built using Expo, designed to enhance your sq
 
 ### Prerequisites
 
-Ensure you have the following installed on your system:
+Please ensure you have the following installed on your system:
 - Node.js (recommended version: 18.x)
 - Yarn (package manager)
 - Expo CLI

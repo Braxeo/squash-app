@@ -24,3 +24,4 @@ jobs:
           title: "Auto-created PR for branch ${{ github.ref_name }}"
           body: |
             This Pull Request was automatically created for the branch: `${{ github.ref_name }}`.
+          always-create: true

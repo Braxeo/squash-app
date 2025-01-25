@@ -5,9 +5,11 @@ on:
     branches:
       - main
   pull_request:
+    branches:
+      - main
 
 jobs:
-  test:
+  build-test-lint:
     runs-on: ubuntu-latest
 
     steps:

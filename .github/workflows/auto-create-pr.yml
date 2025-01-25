@@ -1,9 +1,12 @@
 name: Auto Create PR
 
 on:
-  create:
+  push:
     branches:
-      - '*' # Matches all branches
+      - '*' # Trigger on any branch push
+  pull_request:
+    branches:
+      - main # Trigger when a PR is created targeting the main branch
 
 jobs:
   create-pull-request:
@@ -13,6 +16,8 @@ jobs:
       # Step 1: Check out the code
       - name: Checkout code
         uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
 
       # Step 2: Create Pull Request
       - name: Create Pull Request

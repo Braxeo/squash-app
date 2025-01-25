@@ -154,6 +154,92 @@ squash-app/
 
 ---
 
+## Branching Strategy and CI/CD Workflow
+
+### Branching Strategy
+
+All branches must follow the naming convention:
+<type>/<short-description>
+
+- **Type**: Indicates the purpose of the branch. Common types include:
+  - feat: For new features
+  - fix: For bug fixes
+  - chore: For maintenance tasks
+  - refactor: For code refactoring
+  - docs: For documentation updates
+  - test: For adding or updating tests
+
+**Examples**:
+- feat/add-login-page
+- fix/header-layout-issue
+- docs/update-readme
+
+---
+
+### Automatic Pull Request Creation
+
+- **How It Works**:
+  - When you push a new branch matching the naming convention (e.g., feat/add-login-page), an auto PR workflow automatically creates a pull request targeting the main branch.
+  - The pull request includes:
+    - The branch name in the title (e.g., Auto-created PR for branch feat/add-login-page).
+    - A default body describing the branch and linking back to the branch name.
+
+- **PR Workflow**:
+  1. Create and push a branch:
+     ```
+     git checkout -b feat/new-feature
+     git push origin feat/new-feature
+     ```
+  2. A pull request will be created automatically.
+  3. The console logs the link to the PR for easy access.
+
+---
+
+### Build-Test-Lint Pipeline
+
+- **Automated Testing and Linting**:
+  - A GitHub Actions workflow runs automatically on every pull request.
+  - The pipeline performs the following checks:
+    1. Build: Ensures the code compiles without errors.
+    2. Test: Runs all unit and integration tests.
+    3. Lint: Checks code quality and adherence to style guides.
+
+- **How It Works**:
+  - The workflow is triggered when:
+    - A new branch is pushed (for auto PR creation).
+    - A pull request is opened or updated.
+  - The workflow validates the code changes before the PR can be merged.
+
+- **Failing Pipeline**:
+  - If any step (build, test, lint) fails, the workflow prevents the PR from being merged.
+  - Contributors must fix the issues and push updates to the branch.
+
+- **Branch Protection**:
+  - The main branch is protected, requiring all PRs to:
+    - Pass the CI pipeline.
+    - Be reviewed and approved before merging.
+
+---
+
+### Example Workflow
+
+1. Create a Branch:
+   git checkout -b feat/add-user-authentication
+
+2. Push the Branch:
+   git push origin feat/add-user-authentication
+
+3. Open the Automatically Created Pull Request:
+   The workflow will log the PR URL in the console for quick access.
+
+4. Ensure All Checks Pass:
+   Wait for the CI pipeline to validate the changes (build, test, and lint).
+
+5. Merge the PR:
+   Once all checks pass and the PR is approved, merge it into the main branch.
+   
+---
+
 ## License
 
 [MIT License](LICENSE)

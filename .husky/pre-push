@@ -1,10 +1,23 @@
 #!/bin/sh
 . "$(dirname "$0")/_/husky.sh"
 
-# Use local `gh` if available
+# Load the .env.gh file
+if [ -f .env.gh ]; then
+    export $(cat .env.gh | xargs)
+else
+    echo "Error: .env.gh file not found. Please create it and add your GITHUB_TOKEN."
+    exit 1
+fi
+
+# Check if GITHUB_TOKEN is set
+if [ -z "$GITHUB_TOKEN" ]; then
+    echo "Error: GITHUB_TOKEN is not set in .env.gh"
+    exit 1
+fi
+
+# Use the token with GitHub CLI
 GH_CLI="./node_modules/.bin/gh"
 
-# Fallback to global `gh` if local is not available
 if [ -x "$GH_CLI" ]; then
     GH_COMMAND="$GH_CLI"
 elif command -v gh &> /dev/null; then
@@ -14,15 +27,18 @@ else
     exit 1
 fi
 
+# Authenticate gh CLI with the token
+echo "$GITHUB_TOKEN" | $GH_COMMAND auth login --with-token
+
 # Get the current branch name
 CURRENT_BRANCH=$(git rev-parse --abbrev-ref HEAD)
 
-# Automatically create a PR using the determined `gh` command
+# Create a pull request
 PR_URL=$("$GH_COMMAND" pr create --base main --head "$CURRENT_BRANCH" --title "PR for $CURRENT_BRANCH" --body "Auto-created PR" 2>/dev/null)
 
 if [ $? -eq 0 ]; then
     echo "Pull Request created: $PR_URL"
 else
-    echo "Failed to create a Pull Request. Ensure GitHub CLI is authenticated and the repository has a valid 'main' branch."
+    echo "Failed to create a Pull Request."
     exit 1
 fi

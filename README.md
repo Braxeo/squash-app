@@ -32,6 +32,16 @@ Please ensure you have the following installed on your system:
    npx husky install
    ```
 
+4. Setup GitHub Personal Access Token:
+   - Go to [GitHub Developer Settings](https://github.com/settings/tokens).
+   - Create a token with the `repo` and `write:repo_hook` permissions.
+   - Copy the token.
+
+   Create a `.env.gh` file in the root directory of the project:
+   ```bash
+   GITHUB_TOKEN=ghp_123984239487234
+   ```
+
 4. Start the app:
    - Android:
      ```bash

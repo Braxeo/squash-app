@@ -32,11 +32,12 @@ yarn-error.*
 
 # local env files
 .env*.local
+.env.gh
 
 # typescript
 *.tsbuildinfo
 
 app-example
 
-# yarn
+# npm package-lock
 package-lock.json

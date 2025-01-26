@@ -66,17 +66,20 @@ fi
 # Get the current branch name
 CURRENT_BRANCH=$(git rev-parse --abbrev-ref HEAD)
 
-# Check if the branch exists on the remote
-BRANCH_EXISTS_ON_REMOTE=$(git ls-remote --heads origin "$CURRENT_BRANCH" | wc -l)
+# Check if the current branch is already tracking a remote branch
+UPSTREAM_BRANCH=$(git rev-parse --abbrev-ref --symbolic-full-name "@{u}" 2>/dev/null)
 
-if [ "$BRANCH_EXISTS_ON_REMOTE" -eq 0 ]; then
-  echo "Branch \"$CURRENT_BRANCH\" does not exist on remote. Pushing the branch..."
+if [ -z "$UPSTREAM_BRANCH" ]; then
+  echo "Branch \"$CURRENT_BRANCH\" is not tracking a remote branch. Setting upstream..."
   git push --set-upstream origin "$CURRENT_BRANCH" --no-verify
   if [ $? -ne 0 ]; then
     echo "Failed to push branch \"$CURRENT_BRANCH\" to remote."
     exit 1
   fi
-  echo "Branch \"$CURRENT_BRANCH\" pushed successfully."
+  echo "Branch \"$CURRENT_BRANCH\" pushed successfully with upstream set."
+else
+  echo "Branch \"$CURRENT_BRANCH\" is already tracking \"$UPSTREAM_BRANCH\". Pushing without --set-upstream..."
+  git push --no-verify
 fi
 
 # Check if a pull request already exists for this branch

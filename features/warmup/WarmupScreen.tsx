@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { View, Text, Button, StyleSheet, Alert } from "react-native";
+import { View, Text, Button, Alert } from "react-native";
 import TimerScreen from "../timer/TimerScreen";
 import { styles } from "./WarmupScreenStyle";
 import { RouteProp } from "@react-navigation/native";

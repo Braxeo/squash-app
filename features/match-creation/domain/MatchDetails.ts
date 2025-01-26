@@ -1,4 +1,4 @@
-import { MatchRules } from "../rules/MatchRules"
+import { MatchRules } from "../../rules/MatchRules"
 import { GameLog } from "./GameLog"
 
 export class MatchDetails {

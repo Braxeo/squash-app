@@ -37,7 +37,7 @@ const TimerScreen: React.FC<TimerScreenProps> = ({ warmupMinutes, onComplete }) 
         clearInterval(timerRef.current);
       }
     };
-  }, [isRunning, time]);
+  }, [isRunning, time, onComplete]);
 
   // Reset the timer
   const resetTimer = () => {

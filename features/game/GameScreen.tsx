@@ -1,8 +1,6 @@
-import BasicButton from "@/components/BasicButton";
 import React, { useState } from "react";
 import { Text, View, Button } from "react-native";
 import { styles } from "./GameScreenStyle";
-import TimerScreen from "../timer/TimerScreen";
 
 const GameScreen: React.FC = () => {
 

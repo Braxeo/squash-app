@@ -31,4 +31,11 @@ export const styles = StyleSheet.create({
       alignItems: "center",
       marginVertical: 10,
     },
+    picker: {
+      height: 50,
+      width: "100%",
+    },
+    errorText: {
+      color: "red"
+    }
   });

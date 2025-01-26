@@ -1,43 +1,29 @@
 import { GameConfigurationError } from "../errors/GameConfigurationError"
+import { PointsBy } from "./constants/Enums"
+import { WinningRequirement } from "./constants/Enums"
 
 export class MatchRules {
     private gamesPerMatch: number
     private pointsPerGame: number
-    private pointPerRally: boolean
-    private pointOnServe: boolean
-    private winByTwo: boolean
-    private firstToGamePoint: boolean
+    private pointsBy: PointsBy
+    private winningRequirement: WinningRequirement
     private warmupMinutes: number
 
     constructor(
         gamesPerMatch: number,
         pointsPerGame: number,
-        pointPerRally: boolean,
-        pointOnServe: boolean,
-        winByTwo: boolean,
-        firstToGamePoint: boolean,
+        pointsBy: PointsBy,
+        winningRequirement: WinningRequirement,
         warmupMinutes: number
     ) {
-        // Validate point rules
-        if(pointPerRally && pointOnServe) {
-            throw new GameConfigurationError("pointPerRally and pointOnServe cannot both be true")
-        }
-
-        // Validate winner rules
-        if(winByTwo && firstToGamePoint) {
-            throw new GameConfigurationError("winByTwo and firstToGamePoint cannot both be true")
-        }
-
         if(warmupMinutes <= 0) {
             throw new GameConfigurationError("Warmup minutes must be > 0")
         }
 
         this.gamesPerMatch = gamesPerMatch
         this.pointsPerGame = pointsPerGame
-        this.pointPerRally = pointPerRally
-        this.pointOnServe = pointOnServe
-        this.winByTwo = winByTwo
-        this.firstToGamePoint = firstToGamePoint
+        this.pointsBy = pointsBy
+        this.winningRequirement = winningRequirement
         this.warmupMinutes = warmupMinutes
     }
 
@@ -48,10 +34,8 @@ export class MatchRules {
         - Games Per Match: ${this.gamesPerMatch}
         - Points Per Game: ${this.pointsPerGame}
         - Warmup minutes: ${this.warmupMinutes}
-        - Point Per Rally: ${this.pointPerRally ? "Yes" : "No"}
-        - Point On Serve: ${this.pointOnServe ? "Yes" : "No"}
-        - Win By Two: ${this.winByTwo ? "Yes" : "No"}
-        - First To Game Point: ${this.firstToGamePoint ? "Yes" : "No"}
+        - Points By: ${this.pointsBy}
+        - Winning Requirements: ${this.winningRequirement}
         `;
     }
 }

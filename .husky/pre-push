@@ -1,44 +1,75 @@
 #!/bin/sh
 . "$(dirname "$0")/_/husky.sh"
 
+# Check if GitHub CLI is installed
+if ! command -v gh &> /dev/null; then
+  echo "GitHub CLI ('gh') is not installed. Installing..."
+
+  # Detect the OS and install `gh` accordingly
+  if [[ "$OSTYPE" == "linux-gnu"* ]]; then
+    if command -v apt &> /dev/null; then
+      sudo apt update && sudo apt install -y gh
+    elif command -v snap &> /dev/null; then
+      sudo snap install gh
+    else
+      echo "Error: Could not find a suitable package manager for Linux."
+      exit 1
+    fi
+  elif [[ "$OSTYPE" == "darwin"* ]]; then
+    if command -v brew &> /dev/null; then
+      brew install gh
+    else
+      echo "Error: Homebrew is not installed. Please install it first."
+      exit 1
+    fi
+  elif [[ "$OSTYPE" == "msys"* || "$OSTYPE" == "cygwin"* ]]; then
+    if command -v choco &> /dev/null; then
+      choco install gh -y
+    else
+      echo "Error: Chocolatey is not installed. Please install it first."
+      exit 1
+    fi
+  else
+    echo "Error: Unsupported operating system."
+    exit 1
+  fi
+
+  # Verify installation
+  if ! command -v gh &> /dev/null; then
+    echo "Error: GitHub CLI installation failed."
+    exit 1
+  fi
+  echo "GitHub CLI ('gh') installed successfully."
+else
+  echo "GitHub CLI ('gh') is already installed."
+fi
+
 # Load the .env.gh file
 if [ -f .env.gh ]; then
-    export $(cat .env.gh | xargs)
+  export $(cat .env.gh | xargs)
 else
-    echo "Error: .env.gh file not found. Please create it and add your GITHUB_TOKEN."
-    exit 1
+  echo "Error: .env.gh file not found. Please create it and add your GITHUB_TOKEN."
+  exit 1
 fi
 
 # Check if GITHUB_TOKEN is set
 if [ -z "$GITHUB_TOKEN" ]; then
-    echo "Error: GITHUB_TOKEN is not set in .env.gh"
-    exit 1
+  echo "Error: GITHUB_TOKEN is not set in .env.gh"
+  exit 1
 fi
 
-# Use the token with GitHub CLI
-GH_CLI="./node_modules/.bin/gh"
-
-if [ -x "$GH_CLI" ]; then
-    GH_COMMAND="$GH_CLI"
-elif command -v gh &> /dev/null; then
-    GH_COMMAND="gh"
-else
-    echo "GitHub CLI (gh) is not installed. Please run 'yarn install' or install it globally."
-    exit 1
-fi
-
-# Authenticate gh CLI with the token
-echo "$GITHUB_TOKEN" | $GH_COMMAND auth login --with-token
+# Authenticate the gh CLI with the token
+echo "$GITHUB_TOKEN" | gh auth login --with-token
 
 # Get the current branch name
 CURRENT_BRANCH=$(git rev-parse --abbrev-ref HEAD)
 
 # Create a pull request
-PR_URL=$("$GH_COMMAND" pr create --base main --head "$CURRENT_BRANCH" --title "PR for $CURRENT_BRANCH" --body "Auto-created PR" 2>/dev/null)
+PR_URL=$(gh pr create --base main --head "$CURRENT_BRANCH" --title "PR for $CURRENT_BRANCH" --body "Auto-created PR" 2>/dev/null)
 
 if [ $? -eq 0 ]; then
-    echo "Pull Request created: $PR_URL"
+  echo "Pull Request created: $PR_URL"
 else
-    echo "Failed to create a Pull Request."
-    exit 1
+  echo "Failed to create a Pull Request."
+  exit 1
 fi

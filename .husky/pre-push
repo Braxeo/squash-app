@@ -2,40 +2,45 @@
 . "$(dirname "$0")/_/husky.sh"
 
 # Check if GitHub CLI is installed
-if ! command -v gh &> /dev/null; then
+if ! command -v gh > /dev/null 2>&1; then
   echo "GitHub CLI ('gh') is not installed. Installing..."
 
   # Detect the OS and install `gh` accordingly
-  if [[ "$OSTYPE" == "linux-gnu"* ]]; then
-    if command -v apt &> /dev/null; then
-      sudo apt update && sudo apt install -y gh
-    elif command -v snap &> /dev/null; then
-      sudo snap install gh
-    else
-      echo "Error: Could not find a suitable package manager for Linux."
+  case "$OSTYPE" in
+    linux*)
+      if command -v apt > /dev/null 2>&1; then
+        sudo apt update && sudo apt install -y gh
+      elif command -v snap > /dev/null 2>&1; then
+        sudo snap install gh
+      else
+        echo "Error: Could not find a suitable package manager for Linux."
+        exit 1
+      fi
+      ;;
+    darwin*)
+      if command -v brew > /dev/null 2>&1; then
+        brew install gh
+      else
+        echo "Error: Homebrew is not installed. Please install it first."
+        exit 1
+      fi
+      ;;
+    msys*|cygwin*|win32)
+      if command -v choco > /dev/null 2>&1; then
+        choco install gh -y
+      else
+        echo "Error: Chocolatey is not installed. Please install it first."
+        exit 1
+      fi
+      ;;
+    *)
+      echo "Error: Unsupported operating system."
       exit 1
-    fi
-  elif [[ "$OSTYPE" == "darwin"* ]]; then
-    if command -v brew &> /dev/null; then
-      brew install gh
-    else
-      echo "Error: Homebrew is not installed. Please install it first."
-      exit 1
-    fi
-  elif [[ "$OSTYPE" == "msys"* || "$OSTYPE" == "cygwin"* ]]; then
-    if command -v choco &> /dev/null; then
-      choco install gh -y
-    else
-      echo "Error: Chocolatey is not installed. Please install it first."
-      exit 1
-    fi
-  else
-    echo "Error: Unsupported operating system."
-    exit 1
-  fi
+      ;;
+  esac
 
   # Verify installation
-  if ! command -v gh &> /dev/null; then
+  if ! command -v gh > /dev/null 2>&1; then
     echo "Error: GitHub CLI installation failed."
     exit 1
   fi
@@ -65,8 +70,7 @@ echo "$GITHUB_TOKEN" | gh auth login --with-token
 CURRENT_BRANCH=$(git rev-parse --abbrev-ref HEAD)
 
 # Create a pull request
-PR_URL=$(gh pr create --base main --head "$CURRENT_BRANCH" --title "PR for $CURRENT_BRANCH" --body "Auto-created PR" 2>/dev/null)
-
+PR_URL=$(gh pr create --base main --head "$CURRENT_BRANCH" --title "PR for $CURRENT_BRANCH" --body "Auto-created PR")
 if [ $? -eq 0 ]; then
   echo "Pull Request created: $PR_URL"
 else

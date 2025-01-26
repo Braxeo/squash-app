@@ -66,11 +66,20 @@ fi
 # Get the current branch name
 CURRENT_BRANCH=$(git rev-parse --abbrev-ref HEAD)
 
-# Create a pull request
-PR_URL=$(gh pr create --base main --head "$CURRENT_BRANCH" --title "PR for $CURRENT_BRANCH" --body "Auto-created PR")
-if [ $? -eq 0 ]; then
-  echo "Pull Request created: $PR_URL"
+# Check if a pull request already exists for this branch
+EXISTING_PR=$(gh pr list --head "$CURRENT_BRANCH" --json url --jq '.[0].url' 2>/dev/null)
+if [ -n "$EXISTING_PR" ]; then
+  echo "A pull request for branch \"$CURRENT_BRANCH\" already exists: $EXISTING_PR"
 else
-  echo "Failed to create a Pull Request."
-  exit 1
+  # Create a new pull request
+  PR_URL=$(gh pr create --base main --head "$CURRENT_BRANCH" --title "PR for $CURRENT_BRANCH" --body "Auto-created PR")
+  if [ $? -eq 0 ]; then
+    echo "Pull Request created: $PR_URL"
+  else
+    echo "Failed to create a Pull Request."
+    exit 1
+  fi
 fi
+
+# Allow the push to continue
+exit 0

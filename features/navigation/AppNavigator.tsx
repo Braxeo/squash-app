@@ -1,8 +1,8 @@
 import React from "react";
 import { createStackNavigator } from "@react-navigation/stack";
-import { NavigationContainer } from "@react-navigation/native";
 import MatchCreationScreen from "../match-creation/MatchCreationScreen";
 import WarmupScreen from "../warmup/WarmupScreen";
+import GameScreen from "../game/GameScreen";
 
 export type AppStackParamList = {
   MatchCreation: undefined; // No params for MatchCreationScreen
@@ -11,6 +11,10 @@ export type AppStackParamList = {
     player2: string;
     warmupMinutes: number;
   }; // Params for WarmupScreen
+  GameScreen: {
+    player1: string;
+    player2: string;
+  }
 };
 
 const Stack = createStackNavigator<AppStackParamList>();
@@ -27,6 +31,11 @@ const AppNavigator: React.FC = () => {
           name="Warmup"
           component={WarmupScreen}
           options={{ title: "Warm-Up" }}
+        />
+        <Stack.Screen
+          name="GameScreen"
+          component={GameScreen}
+          options={{ title: "Game" }}
         />
       </Stack.Navigator>
     );

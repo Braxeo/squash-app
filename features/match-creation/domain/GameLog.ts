@@ -20,6 +20,7 @@ export class GameLog {
     }
 }
 
+/* eslint-disable import/no-unused-modules */
 export class Entry {
     private player: string
     constructor(
@@ -32,3 +33,4 @@ export class Entry {
         return this.player
     }
 }
+/* eslint-enable import/no-unused-modules */

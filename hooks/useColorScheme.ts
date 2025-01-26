@@ -1,1 +1,1 @@
-export { useColorScheme } from 'react-native';
+export { useColorScheme } from 'react-native'; // eslint-disable-next-line import/no-unused-modules

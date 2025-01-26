@@ -21,8 +21,10 @@ export const styles = StyleSheet.create({
     },
     buttonContainer: {
       marginTop: 20,
-      flexDirection: "row",
-      justifyContent: "space-around",
+      gap: 10,
+      flexDirection: "column",
+      justifyContent: "center",
+      alignItems: "center"
     },
     finishedText: {
       marginTop: 10,
@@ -30,5 +32,10 @@ export const styles = StyleSheet.create({
       fontWeight: "bold",
       color: "green",
       textAlign: "center",
+    },
+    timer: {
+      fontSize: 48,
+      fontWeight: "bold",
+      marginBottom: 30,
     },
   });

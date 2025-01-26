@@ -63,14 +63,6 @@ if [ -z "$GITHUB_TOKEN" ]; then
   exit 1
 fi
 
-# Authenticate the gh CLI with the token
-echo "Authenticating with GitHub CLI using the token..."
-echo "$GITHUB_TOKEN" | gh auth login --with-token
-if [ $? -ne 0 ]; then
-  echo "Error: Authentication with GitHub CLI failed."
-  exit 1
-fi
-
 # Get the current branch name
 CURRENT_BRANCH=$(git rev-parse --abbrev-ref HEAD)
 

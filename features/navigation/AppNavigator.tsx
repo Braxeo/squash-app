@@ -1,6 +1,6 @@
 import React from "react";
 import { createStackNavigator } from "@react-navigation/stack";
-import MatchCreationScreen from "../match-creation/MatchCreationScreen";
+import MatchCreationScreen from "../match-creation/presentation/MatchCreationScreen";
 import WarmupScreen from "../warmup/WarmupScreen";
 import GameScreen from "../game/GameScreen";
 

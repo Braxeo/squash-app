@@ -66,6 +66,19 @@ fi
 # Get the current branch name
 CURRENT_BRANCH=$(git rev-parse --abbrev-ref HEAD)
 
+# Check if the branch exists on the remote
+BRANCH_EXISTS_ON_REMOTE=$(git ls-remote --heads origin "$CURRENT_BRANCH" | wc -l)
+
+if [ "$BRANCH_EXISTS_ON_REMOTE" -eq 0 ]; then
+  echo "Branch \"$CURRENT_BRANCH\" does not exist on remote. Pushing the branch..."
+  git push --set-upstream origin "$CURRENT_BRANCH" --no-verify
+  if [ $? -ne 0 ]; then
+    echo "Failed to push branch \"$CURRENT_BRANCH\" to remote."
+    exit 1
+  fi
+  echo "Branch \"$CURRENT_BRANCH\" pushed successfully."
+fi
+
 # Check if a pull request already exists for this branch
 EXISTING_PR=$(gh pr list --head "$CURRENT_BRANCH" --json url --jq '.[0].url' 2>/dev/null)
 if [ -n "$EXISTING_PR" ]; then

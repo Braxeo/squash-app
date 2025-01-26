@@ -33,15 +33,22 @@ jobs:
       - name: Install dependencies
         run: yarn install
 
-      # Step 5: Run commitlint on all commits in the PR
+      # Step 5: Run commitlint
       - name: Run commitlint
         run: |
-          # Fetch all commits in the PR
-          git fetch --depth=1 origin +refs/heads/${{ github.event.pull_request.head.ref }}:refs/remotes/origin/${{ github.event.pull_request.head.ref }}
+          # Fetch all branches from the remote
+          git fetch --all
+
+          # Ensure both base and head branches exist locally
+          git checkout ${{ github.event.pull_request.base.ref }} || git fetch origin ${{ github.event.pull_request.base.ref }} && git checkout ${{ github.event.pull_request.base.ref }}
+          git checkout ${{ github.event.pull_request.head.ref }} || git fetch origin ${{ github.event.pull_request.head.ref }} && git checkout ${{ github.event.pull_request.head.ref }}
+
           # Get the list of commit SHAs in the PR
           commits=$(git log origin/${{ github.event.pull_request.base.ref }}..origin/${{ github.event.pull_request.head.ref }} --pretty=format:%H)
+
           # Check each commit with commitlint
           for commit in $commits; do
             echo "Checking commit $commit"
             git show --quiet $commit --pretty=format:%B | npx commitlint
           done
+

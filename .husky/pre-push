@@ -5,9 +5,9 @@
 if ! command -v gh > /dev/null 2>&1; then
   echo "GitHub CLI ('gh') is not installed. Installing..."
 
-  # Detect the OS and install `gh` accordingly
-  case "$OSTYPE" in
-    linux*)
+  # Detect OS and install `gh`
+  case "$(uname -s)" in
+    Linux*)
       if command -v apt > /dev/null 2>&1; then
         sudo apt update && sudo apt install -y gh
       elif command -v snap > /dev/null 2>&1; then
@@ -17,7 +17,7 @@ if ! command -v gh > /dev/null 2>&1; then
         exit 1
       fi
       ;;
-    darwin*)
+    Darwin*)
       if command -v brew > /dev/null 2>&1; then
         brew install gh
       else
@@ -25,7 +25,7 @@ if ! command -v gh > /dev/null 2>&1; then
         exit 1
       fi
       ;;
-    msys*|cygwin*|win32)
+    CYGWIN*|MINGW*|MSYS*)
       if command -v choco > /dev/null 2>&1; then
         choco install gh -y
       else
@@ -64,7 +64,12 @@ if [ -z "$GITHUB_TOKEN" ]; then
 fi
 
 # Authenticate the gh CLI with the token
+echo "Authenticating with GitHub CLI using the token..."
 echo "$GITHUB_TOKEN" | gh auth login --with-token
+if [ $? -ne 0 ]; then
+  echo "Error: Authentication with GitHub CLI failed."
+  exit 1
+fi
 
 # Get the current branch name
 CURRENT_BRANCH=$(git rev-parse --abbrev-ref HEAD)

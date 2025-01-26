@@ -1,0 +1,47 @@
+name: Commitlint
+
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  commitlint:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: Check out the code
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      # Step 2: Install asdf and plugins
+      - name: Install asdf and plugins
+        uses: asdf-vm/actions/install@v3
+        with:
+          asdf-version: v0.12.0
+          plugins: |
+            nodejs https://github.com/asdf-vm/asdf-nodejs.git
+            yarn https://github.com/twuni/asdf-yarn.git
+        env:
+          ASDF_NO_CHECK_FOR_UPDATES: "true"
+
+      # Step 3: Install plugin versions from .tool-versions
+      - name: Install plugin versions
+        run: asdf install
+
+      # Step 4: Install dependencies
+      - name: Install dependencies
+        run: yarn install
+
+      # Step 5: Run commitlint on all commits in the PR
+      - name: Run commitlint
+        run: |
+          # Fetch all commits in the PR
+          git fetch --depth=1 origin +refs/heads/${{ github.event.pull_request.head.ref }}:refs/remotes/origin/${{ github.event.pull_request.head.ref }}
+          # Get the list of commit SHAs in the PR
+          commits=$(git log origin/${{ github.event.pull_request.base.ref }}..origin/${{ github.event.pull_request.head.ref }} --pretty=format:%H)
+          # Check each commit with commitlint
+          for commit in $commits; do
+            echo "Checking commit $commit"
+            git show --quiet $commit --pretty=format:%B | npx commitlint
+          done

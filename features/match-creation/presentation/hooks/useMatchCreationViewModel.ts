@@ -78,13 +78,7 @@ export const useMatchCreationViewModel = () => {
     
       console.log(matchDetails.describe())
 
-      navigation.navigate(
-        "Warmup", {
-          player1: sanitizePlayerName(player1) as string,
-          player2: sanitizePlayerName(player2) as string,
-          warmupMinutes: warmupMinutes
-        }, 
-      )
+      navigation.navigate("Warmup", { matchDetails })
     };
 
     return {

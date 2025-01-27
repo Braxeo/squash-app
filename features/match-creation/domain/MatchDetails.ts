@@ -2,12 +2,12 @@ import { MatchRules } from "../../rules/MatchRules"
 import { GameLog } from "./GameLog"
 
 export class MatchDetails {
-    private player1: string
-    private player2: string
-    private matchRules: MatchRules
-    private player1Games: number
-    private player2Games: number
-    private gameLog: GameLog
+    public player1: string
+    public player2: string
+    public player1Games: number
+    public player2Games: number
+    public gameLog: GameLog
+    public matchRules: MatchRules
 
     constructor(
         player1: string,

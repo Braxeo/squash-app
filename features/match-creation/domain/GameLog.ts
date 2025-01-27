@@ -1,3 +1,5 @@
+import { Side } from "@/features/game/domain/Enums";
+
 export class GameLog {
     private entries: Entry[];
 
@@ -13,6 +15,10 @@ export class GameLog {
         this.entries.pop()
     }
 
+    public getEntries(): Entry[] {
+        return this.entries
+    } 
+
     public describe(): string {
         return this.entries.length > 0 ? 
         this.entries.map((entry) => entry.describe()).join(", ") : 
@@ -22,15 +28,34 @@ export class GameLog {
 
 /* eslint-disable import/no-unused-modules */
 export class Entry {
-    private player: string
+    private playerId: number
+    private side: Side
+    private point: number | undefined
+
     constructor(
-        player: string
+        playerId: number,
+        side: Side,
+        point: number | undefined
     ) {
-        this.player = player
+        this.playerId = playerId
+        this.side = side
+        this.point = point
     }
 
-    public describe(): string {
-        return this.player
+    public getPlayerId(): number {
+        return this.playerId
+    }
+
+    public getPoint(): number | undefined {
+        return this.point
+    }
+
+    public getSide(): Side {
+        return this.side;
+    }
+
+    describe(): string {
+        return `Player ID: ${this.playerId}, Side: ${this.side}, Point: ${this.point ?? "None"}`;
     }
 }
 /* eslint-enable import/no-unused-modules */

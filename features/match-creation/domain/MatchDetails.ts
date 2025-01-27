@@ -1,17 +1,18 @@
 import { MatchRules } from "../../rules/MatchRules"
 import { GameLog } from "./GameLog"
+import { Player } from "./Player"
 
 export class MatchDetails {
-    public player1: string
-    public player2: string
+    public player1: Player
+    public player2: Player
     public player1Games: number
     public player2Games: number
     public gameLog: GameLog
     public matchRules: MatchRules
 
     constructor(
-        player1: string,
-        player2: string,
+        player1: Player,
+        player2: Player,
         matchRules: MatchRules,
         player1Games: number = 0,
         player2Games: number = 0,
@@ -28,8 +29,8 @@ export class MatchDetails {
     public describe(): string {
         return `
           Match Details:
-          - Player 1: ${this.player1}
-          - Player 2: ${this.player2}
+          - Player 1: ${this.player1.describe()}
+          - Player 2: ${this.player2.describe()}
           - Match Rules: ${this.matchRules.describe()} 
           - Player 1 Games Won: ${this.player1Games}
           - Player 2 Games Won: ${this.player2Games}

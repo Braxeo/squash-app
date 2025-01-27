@@ -5,7 +5,7 @@ import { WinningRequirement } from "./constants/Enums"
 export class MatchRules {
     private gamesPerMatch: number
     private pointsPerGame: number
-    private pointsBy: PointsBy
+    public pointsBy: PointsBy
     private winningRequirement: WinningRequirement
     public warmupMinutes: number
 

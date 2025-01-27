@@ -7,6 +7,8 @@ import { useState } from "react";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { AppStackParamList } from "@/features/navigation/AppNavigator";
 import { useNavigation } from "@react-navigation/native";
+import { Player } from "../../domain/Player";
+import { PlayerTile } from "@/features/game/presentation/components/PlayerTile";
 
 
 
@@ -69,10 +71,20 @@ export const useMatchCreationViewModel = () => {
         winningRequirement,
         warmupMinutes
       );
+
+      const p1 = new Player(
+        sanitizePlayerName(player1) as string,
+        1
+      )
+
+      const p2 = new Player(
+        sanitizePlayerName(player2) as string,
+        2
+      )
     
       const matchDetails = new MatchDetails(
-        sanitizePlayerName(player1) as string,
-        sanitizePlayerName(player2) as string, 
+        p1, 
+        p2,
         matchRules
       );
     

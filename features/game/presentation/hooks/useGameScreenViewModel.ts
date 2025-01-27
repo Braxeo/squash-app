@@ -3,9 +3,12 @@ import { MatchDetails } from "@/features/match-creation/domain/MatchDetails"
 import { PointsBy } from "@/features/rules/constants/Enums";
 import { useState } from "react";
 import { Side } from "../../domain/Enums";
-import { toggleSide } from "../../domain/util/SlideUtil";
-import { getPointsForPlayer, getServingPlayer, getServingPlayersLastSide } from "../../domain/util/GameLogUtils";
-import { calculateGameOrMatchBallText } from "../../domain/util/GameRulesUtils";
+import { toggleSide } from "../../../utils/SideUtils";
+import { getPointsForPlayer, getServingPlayer, getServingPlayersLastSide } from "../../../utils/GameLogUtils";
+import { calculateGameOrMatchBallText, calculateMatchWinningPlayer } from "@/features/utils/MatchUtils";
+import { MatchValidationError } from "@/features/errors/MatchValidationError";
+import { gameWinner } from "@/features/utils/GameUtils";
+import { GameValidationError } from "@/features/errors/GameValidationError";
 
 export const useGameScreenViewModel = (matchDetails: MatchDetails) => {
 
@@ -26,9 +29,10 @@ export const useGameScreenViewModel = (matchDetails: MatchDetails) => {
     // Get stored serving player from gameLog, otherwise default to player 1
     const [servingPlayer, setServingPlayer] = useState<number>(getServingPlayer(gameLog) ?? player1.getPlayerId())
 
-    const [gameOrMatchBallText, setGameOrMatchBallText] = useState<string | undefined>(calculateGameOrMatchBallText(
-        gameLog, matchRules, games_p1, games_p2
-    ))
+    const [gameOrMatchBallText, setGameOrMatchBallText] = useState<string | undefined>(calculateGameOrMatchBallText(matchDetails))
+
+    // Winner of the game
+    const [winnerText, setWinnerText] = useState<string | undefined>()
 
     // Function to handle point win
     const handlePointWin = (playerId: number) => {
@@ -45,7 +49,8 @@ export const useGameScreenViewModel = (matchDetails: MatchDetails) => {
                     // Continue serving and change sides
                     handleToggleServingSide()
                     
-                    // TODO Check if they've won
+                    // Check if the player has won!
+                    updatePlayerWonState()
                 } else {
                     // Add a new entry into the gameLog, so that we know they've won the last rally
                     // no point was awarded, but the change of server still occurs
@@ -75,9 +80,9 @@ export const useGameScreenViewModel = (matchDetails: MatchDetails) => {
                 // Update the game or match ball text
                 updateGameOrMatchBall();
                 
+                // Check if the player has won!
+                updatePlayerWonState()
                 break;
-
-                // TODO Check if they've won
             }
             default: {
                 console.log("Unknown PointsBy value: ", matchRules.getPointsBy())
@@ -122,7 +127,38 @@ export const useGameScreenViewModel = (matchDetails: MatchDetails) => {
     }
 
     const updateGameOrMatchBall = () => {
-        setGameOrMatchBallText(calculateGameOrMatchBallText(gameLog, matchRules, games_p1, games_p2))
+        setGameOrMatchBallText(calculateGameOrMatchBallText(matchDetails))
+    }
+
+    const updatePlayerWonState = () => {
+        // Check for a match winner
+        const matchWinningPlayer = calculateMatchWinningPlayer(matchDetails)
+        if(matchWinningPlayer) {
+            if(matchWinningPlayer === player1.getPlayerId()) {
+                setWinnerText(`${player1.getPlayerName()} has won the match`)
+            } else if(matchWinningPlayer === player2.getPlayerId()) {
+                setWinnerText(`${player2.getPlayerName()} has won the match`)
+            } else {
+                throw new MatchValidationError(`Unknown match winner. Winner PlayerID: ${matchWinningPlayer}`)
+            }
+            return;
+        } 
+        
+        // Check for a game winner
+        const gameWinningPlayer = gameWinner(gameLog, matchRules)
+        if(gameWinningPlayer) {
+            if(gameWinningPlayer === player1.getPlayerId()) {
+                setWinnerText(`${player1.getPlayerName()} has won the game`)
+            } else if(gameWinningPlayer === player2.getPlayerId()) {
+                setWinnerText(`${player2.getPlayerName()} has won the game`)
+            } else {
+                throw new GameValidationError(`Unknown game winner. Winner PlayerID: ${gameWinningPlayer}`)
+            }
+            return;
+        }
+        
+        // No winner yet
+        setWinnerText(undefined)
     }
 
     return {
@@ -135,6 +171,7 @@ export const useGameScreenViewModel = (matchDetails: MatchDetails) => {
         servingSide,
         servingPlayer,
         gameOrMatchBallText,
+        winnerText,
         handlePointWin,
         handleToggleServingSide,
         handleUndo

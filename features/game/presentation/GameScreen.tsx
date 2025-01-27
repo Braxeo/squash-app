@@ -1,5 +1,5 @@
-import React from "react";
-import { Button, Text, View } from "react-native";
+import React, { useEffect } from "react";
+import { Alert, Button, Text, View } from "react-native";
 import { styles } from "./GameScreenStyle";
 import { useGameScreenViewModel } from "./hooks/useGameScreenViewModel";
 import { RouteProp } from "@react-navigation/native";
@@ -22,6 +22,7 @@ const GameScreen: React.FC<Props> = ({ route }) => {
     servingSide,
     servingPlayer,
     gameOrMatchBallText,
+    winnerText,
     handlePointWin,
     handleToggleServingSide,
     handleUndo
@@ -47,6 +48,20 @@ const GameScreen: React.FC<Props> = ({ route }) => {
     player1Games: games_p1,
     player2Games: games_p2,
   }
+
+  useEffect(() => {
+    console.log(`Playing effect with winner text: ${winnerText}`)
+    if(winnerText) {
+      Alert.alert(
+        "Winner!",
+        `${winnerText}`,
+        [
+          { text: "Finish", onPress: () => {} },
+          { text: "Undo", onPress: () => handleUndo(), style:"cancel" },
+        ]
+      )
+    }
+  }, [winnerText])
 
 
   return (

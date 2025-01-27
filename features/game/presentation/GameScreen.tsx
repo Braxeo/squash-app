@@ -1,10 +1,11 @@
 import React from "react";
-import { Text, View } from "react-native";
+import { Button, Text, View } from "react-native";
 import { styles } from "./GameScreenStyle";
 import { useGameScreenViewModel } from "./hooks/useGameScreenViewModel";
 import { RouteProp } from "@react-navigation/native";
 import { AppStackParamList } from "@/features/navigation/AppNavigator";
 import { PlayerTile } from "./components/PlayerTile";
+import { GameScoreTile } from "./components/GameScoreTile";
 
 type GameScreenRouteProp = RouteProp<AppStackParamList, "GameScreen">;
 type Props = { route: GameScreenRouteProp; };
@@ -21,7 +22,8 @@ const GameScreen: React.FC<Props> = ({ route }) => {
     servingSide,
     servingPlayer,
     handlePointWin,
-    handleToggleServingSide
+    handleToggleServingSide,
+    handleUndo
 } = useGameScreenViewModel(route.params.matchDetails)
 
   const player1TileProps = {
@@ -40,14 +42,21 @@ const GameScreen: React.FC<Props> = ({ route }) => {
     handleOnPress: () => { servingPlayer === player2.getPlayerId() && handleToggleServingSide() }
   }
 
+  const gameScoreTileProps = {
+    player1Games: games_p1,
+    player2Games: games_p2,
+  }
+
 
   return (
     <View style={styles.container}>
       <Text style={styles.header}>Squash Scoring</Text>
       <View style={styles.scoreboard}>
         <PlayerTile {...player1TileProps} />
+        <GameScoreTile {...gameScoreTileProps} />
         <PlayerTile {...player2TileProps} />
       </View>
+      <Button title="undo" onPress={handleUndo}/>
     </View>
   );
 }

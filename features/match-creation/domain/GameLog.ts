@@ -29,12 +29,12 @@ export class GameLog {
 /* eslint-disable import/no-unused-modules */
 export class Entry {
     private playerId: number
-    private side: Side
+    private side: Side | undefined
     private point: number | undefined
 
     constructor(
         playerId: number,
-        side: Side,
+        side: Side | undefined,
         point: number | undefined
     ) {
         this.playerId = playerId
@@ -50,12 +50,12 @@ export class Entry {
         return this.point
     }
 
-    public getSide(): Side {
+    public getSide(): Side | undefined {
         return this.side;
     }
 
     describe(): string {
-        return `Player ID: ${this.playerId}, Side: ${this.side}, Point: ${this.point ?? "None"}`;
+        return `Player ID: ${this.playerId}, Side: ${this.side ?? "None"}, Point: ${this.point ?? "None"}`;
     }
 }
 /* eslint-enable import/no-unused-modules */

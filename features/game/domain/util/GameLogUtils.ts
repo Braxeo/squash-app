@@ -11,10 +11,10 @@ export const getPointsForPlayer = (playerId: number, gameLog: GameLog): number =
 }
 
 export const getServingPlayer = (gameLog: GameLog): number | undefined => {
-    return gameLog.getEntries().at(gameLog.getEntries().length)?.getPlayerId()
+    return gameLog.getEntries().at(gameLog.getEntries().length-1)?.getPlayerId()
 }
 
-export const getServingPlayerSide = (gameLog: GameLog): Side | undefined => {
-    return gameLog.getEntries().at(gameLog.getEntries().length)?.getSide()
+export const getServingPlayersLastSide = (gameLog: GameLog): Side | undefined => {
+    return gameLog.getEntries().at(gameLog.getEntries().length-1)?.getSide()
 }
 

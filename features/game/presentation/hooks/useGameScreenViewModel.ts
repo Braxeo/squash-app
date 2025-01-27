@@ -4,7 +4,7 @@ import { PointsBy } from "@/features/rules/constants/Enums";
 import { useState } from "react";
 import { Side } from "../../domain/Enums";
 import { toggleSide } from "../../domain/util/SlideUtil";
-import { getPointsForPlayer, getServingPlayer, getServingPlayerSide } from "../../domain/util/GameLogUtils";
+import { getPointsForPlayer, getServingPlayer, getServingPlayersLastSide } from "../../domain/util/GameLogUtils";
 
 export const useGameScreenViewModel = (matchDetails: MatchDetails) => {
 
@@ -16,8 +16,11 @@ export const useGameScreenViewModel = (matchDetails: MatchDetails) => {
     const [games_p1, setPlayer1Games] = useState(player1Games);
     const [games_p2, setPlayer2Games] = useState(player2Games);
 
-    // Get stored serving side from gameLog, otherwise default to Right side
-    const [servingSide, setServingSide] = useState<Side>(getServingPlayerSide(gameLog) ?? Side.RIGHT)
+    // Get stored last serving side from gameLog, toggle as this was where they scored their last point from, 
+    // otherwise default to Right side
+    const lastServeSide = getServingPlayersLastSide(gameLog)
+    const startingServeSize = lastServeSide ? toggleSide(lastServeSide) : Side.RIGHT
+    const [servingSide, setServingSide] = useState<Side>(startingServeSize)
 
     // Get stored serving player from gameLog, otherwise default to player 1
     const [servingPlayer, setServingPlayer] = useState<number>(getServingPlayer(gameLog) ?? player1.getPlayerId())
@@ -36,6 +39,9 @@ export const useGameScreenViewModel = (matchDetails: MatchDetails) => {
                     
                     // TODO Check if they've won
                 } else {
+                    // Add a new entry into the gameLog, so that we know they've won the last rally
+                    // no point was awarded, but the change of server still occurs
+                    gameLog.addEntry(new Entry(playerId, undefined, undefined))
                     // Set as serving player
                     setServingPlayer(playerId)
                     // Default serving side to RIGHT
@@ -86,6 +92,22 @@ export const useGameScreenViewModel = (matchDetails: MatchDetails) => {
         }
     }
 
+    const handleUndo = () => {
+        gameLog.undo();
+
+        // Update scores
+        setPlayer1Score(getPointsForPlayer(player1.getPlayerId(), gameLog));
+        setPlayer2Score(getPointsForPlayer(player2.getPlayerId(), gameLog));
+
+        // Update serving side
+        const lastServeSide = getServingPlayersLastSide(gameLog)
+        const startingServeSize = lastServeSide ? toggleSide(lastServeSide) : Side.RIGHT
+        setServingSide(startingServeSize)
+
+        // Update serving player
+        setServingPlayer(getServingPlayer(gameLog) ?? player1.getPlayerId())
+    }
+
     return {
         player1,
         player2,
@@ -96,6 +118,7 @@ export const useGameScreenViewModel = (matchDetails: MatchDetails) => {
         servingSide,
         servingPlayer,
         handlePointWin,
-        handleToggleServingSide
+        handleToggleServingSide,
+        handleUndo
     }
 }

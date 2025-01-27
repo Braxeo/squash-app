@@ -8,9 +8,6 @@ import { StackNavigationProp } from "@react-navigation/stack";
 import { AppStackParamList } from "@/features/navigation/AppNavigator";
 import { useNavigation } from "@react-navigation/native";
 import { Player } from "../../domain/Player";
-import { PlayerTile } from "@/features/game/presentation/components/PlayerTile";
-
-
 
 export const useMatchCreationViewModel = () => {
   type MatchCreationScreenNavigationProp = StackNavigationProp<AppStackParamList,"MatchCreation">;

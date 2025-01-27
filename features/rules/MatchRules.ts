@@ -7,7 +7,7 @@ export class MatchRules {
     private pointsPerGame: number
     private pointsBy: PointsBy
     private winningRequirement: WinningRequirement
-    private warmupMinutes: number
+    public warmupMinutes: number
 
     constructor(
         gamesPerMatch: number,

@@ -3,17 +3,15 @@ import { createStackNavigator } from "@react-navigation/stack";
 import MatchCreationScreen from "../match-creation/presentation/MatchCreationScreen";
 import WarmupScreen from "../warmup/presentation/WarmupScreen";
 import GameScreen from "../game/GameScreen";
+import { MatchDetails } from "../match-creation/domain/MatchDetails";
 
 export type AppStackParamList = {
   MatchCreation: undefined; // No params for MatchCreationScreen
   Warmup: {
-    player1: string;
-    player2: string;
-    warmupMinutes: number;
-  }; // Params for WarmupScreen
+    matchDetails: MatchDetails;
+  };
   GameScreen: {
-    player1: string;
-    player2: string;
+    matchDetails: MatchDetails;
   }
 };
 

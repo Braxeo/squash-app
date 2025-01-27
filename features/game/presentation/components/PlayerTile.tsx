@@ -21,7 +21,7 @@ export const PlayerTile: React.FC<PlayerTileProps> = ({
     handleOnPress,
 }: PlayerTileProps) => {
     const servingIcon = side 
-        ? (side === Side.LEFT ? <View>L</View> : side === Side.RIGHT ? <View>R</View> : undefined)
+        ? (side === Side.LEFT ? <Text>L</Text> : side === Side.RIGHT ? <Text>R</Text> : undefined)
         : undefined;
 
     return (

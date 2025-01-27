@@ -5,6 +5,7 @@ import { useState } from "react";
 import { Side } from "../../domain/Enums";
 import { toggleSide } from "../../domain/util/SlideUtil";
 import { getPointsForPlayer, getServingPlayer, getServingPlayersLastSide } from "../../domain/util/GameLogUtils";
+import { calculateGameOrMatchBallText } from "../../domain/util/GameRulesUtils";
 
 export const useGameScreenViewModel = (matchDetails: MatchDetails) => {
 
@@ -25,14 +26,21 @@ export const useGameScreenViewModel = (matchDetails: MatchDetails) => {
     // Get stored serving player from gameLog, otherwise default to player 1
     const [servingPlayer, setServingPlayer] = useState<number>(getServingPlayer(gameLog) ?? player1.getPlayerId())
 
+    const [gameOrMatchBallText, setGameOrMatchBallText] = useState<string | undefined>(calculateGameOrMatchBallText(
+        gameLog, matchRules, games_p1, games_p2
+    ))
+
     // Function to handle point win
     const handlePointWin = (playerId: number) => {
-        switch(matchRules.pointsBy) {
+        switch(matchRules.getPointsBy()) {
             case PointsBy.PointOnServe: {
                 // Check if they were already serving
                 if(servingPlayer === playerId) {
                     // Yes, gain a point
                     incrementPlayerScore(playerId)
+
+                    // Update the game or match ball text
+                    updateGameOrMatchBall();
 
                     // Continue serving and change sides
                     handleToggleServingSide()
@@ -63,12 +71,16 @@ export const useGameScreenViewModel = (matchDetails: MatchDetails) => {
                     // Continue serving and change sides
                     handleToggleServingSide()
                 }
+                
+                // Update the game or match ball text
+                updateGameOrMatchBall();
+                
                 break;
 
                 // TODO Check if they've won
             }
             default: {
-                console.log("Unknown PointsBy value: ", matchRules.pointsBy)
+                console.log("Unknown PointsBy value: ", matchRules.getPointsBy())
                 break;
             }
         }
@@ -83,12 +95,10 @@ export const useGameScreenViewModel = (matchDetails: MatchDetails) => {
         gameLog.addEntry(new Entry(playerId, servingSide, 1))
         if(playerId === player1.getPlayerId()) {
             setPlayer1Score(score_p1+1)
-            return;
         }
 
         if(playerId === player2.getPlayerId()) {
             setPlayer2Score(score_p2+1)
-            return;
         }
     }
 
@@ -106,6 +116,13 @@ export const useGameScreenViewModel = (matchDetails: MatchDetails) => {
 
         // Update serving player
         setServingPlayer(getServingPlayer(gameLog) ?? player1.getPlayerId())
+
+        // Update the game / match ball text
+        updateGameOrMatchBall()
+    }
+
+    const updateGameOrMatchBall = () => {
+        setGameOrMatchBallText(calculateGameOrMatchBallText(gameLog, matchRules, games_p1, games_p2))
     }
 
     return {
@@ -117,6 +134,7 @@ export const useGameScreenViewModel = (matchDetails: MatchDetails) => {
         games_p2,
         servingSide,
         servingPlayer,
+        gameOrMatchBallText,
         handlePointWin,
         handleToggleServingSide,
         handleUndo

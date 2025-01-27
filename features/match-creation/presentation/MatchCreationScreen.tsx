@@ -18,6 +18,7 @@ const MatchCreationScreen: React.FC = () => {
       player2Error,
       gamesPerMatch,
       setGamesPerMatch,
+      gamesPerMatchError,
       pointsPerGame,
       setPointsPerGame,
       warmupMinutes,
@@ -27,8 +28,6 @@ const MatchCreationScreen: React.FC = () => {
       winningRequirement,
       setWinningRequirement
     } = useMatchCreationViewModel()
-
-    console.log(player1Error, player2Error)
   
     return (
       <View style={styles.container}>
@@ -52,13 +51,14 @@ const MatchCreationScreen: React.FC = () => {
         />
         {player2Error && (<Text style={[styles.label, styles.errorText]}>{player2Error}</Text>)}
   
-        <Text style={styles.label}>Best Of</Text>
+        <Text style={[styles.label, gamesPerMatchError ? styles.errorText : null]}>Best Of</Text>
         <TextInput
-          style={styles.input}
+          style={[styles.input, gamesPerMatchError ? styles.errorText : null]}
           keyboardType="numeric"
           value={String(gamesPerMatch)}
           onChangeText={(text) => setGamesPerMatch(Number(text))}
         />
+        {gamesPerMatchError && (<Text style={[styles.label, styles.errorText]}>{gamesPerMatchError}</Text>)}
   
         <Text style={styles.label}>Points Per Game</Text>
         <TextInput

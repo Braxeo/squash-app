@@ -21,6 +21,7 @@ const GameScreen: React.FC<Props> = ({ route }) => {
     games_p2,
     servingSide,
     servingPlayer,
+    gameOrMatchBallText,
     handlePointWin,
     handleToggleServingSide,
     handleUndo
@@ -51,6 +52,7 @@ const GameScreen: React.FC<Props> = ({ route }) => {
   return (
     <View style={styles.container}>
       <Text style={styles.header}>Squash Scoring</Text>
+      {gameOrMatchBallText && <Text style={styles.gameOrMatchBall}>{gameOrMatchBallText}</Text>}
       <View style={styles.scoreboard}>
         <PlayerTile {...player1TileProps} />
         <GameScoreTile {...gameScoreTileProps} />

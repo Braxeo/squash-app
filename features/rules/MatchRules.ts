@@ -5,9 +5,9 @@ import { WinningRequirement } from "./constants/Enums"
 export class MatchRules {
     private gamesPerMatch: number
     private pointsPerGame: number
-    public pointsBy: PointsBy
+    private pointsBy: PointsBy
     private winningRequirement: WinningRequirement
-    public warmupMinutes: number
+    private warmupMinutes: number
 
     constructor(
         gamesPerMatch: number,
@@ -20,11 +20,35 @@ export class MatchRules {
             throw new GameConfigurationError("Warmup minutes must be > 0")
         }
 
+        if(gamesPerMatch % 2 !== 1) {
+            throw new GameConfigurationError("Games in a match should be odd numbered")
+        }
+
         this.gamesPerMatch = gamesPerMatch
         this.pointsPerGame = pointsPerGame
         this.pointsBy = pointsBy
         this.winningRequirement = winningRequirement
         this.warmupMinutes = warmupMinutes
+    }
+
+    public getGamesPerMatch(): number {
+        return this.gamesPerMatch
+    }
+
+    public getPointsPerGame(): number {
+        return this.pointsPerGame
+    }
+
+    public getPointsBy(): PointsBy {
+        return this.pointsBy
+    }
+
+    public getWinningRequirement(): WinningRequirement {
+        return this.winningRequirement
+    }
+
+    public getWarmupMinutes(): number {
+        return this.warmupMinutes
     }
 
     // Method to return a description of the class instance

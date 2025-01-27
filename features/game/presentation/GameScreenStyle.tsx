@@ -44,4 +44,8 @@ export const styles = StyleSheet.create({
       fontWeight: "bold",
       marginBottom: 20,
     },
+    gameOrMatchBall: {
+      fontSize: 16,
+      fontWeight: "bold",
+    },
   });

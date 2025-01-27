@@ -8,6 +8,7 @@ import { StackNavigationProp } from "@react-navigation/stack";
 import { AppStackParamList } from "@/features/navigation/AppNavigator";
 import { useNavigation } from "@react-navigation/native";
 import { Player } from "../../domain/Player";
+import { GameConfigurationError } from "@/features/errors/GameConfigurationError";
 
 export const useMatchCreationViewModel = () => {
   type MatchCreationScreenNavigationProp = StackNavigationProp<AppStackParamList,"MatchCreation">;
@@ -28,6 +29,7 @@ export const useMatchCreationViewModel = () => {
     
     const [player1Error, setPlayer1Error] = useState<string | undefined>();
     const [player2Error, setPlayer2Error] = useState<string | undefined>();
+    const [gamesPerMatchError, setGamesPerMatchError] = useState<string | undefined>();
 
     const setPlayer1 = (value: string) => {
       setPlayer1Error(undefined)
@@ -60,34 +62,50 @@ export const useMatchCreationViewModel = () => {
         setPlayer2Error("Player name cannot be empty")
         return;
       }
-    
-      const matchRules = new MatchRules(
-        gamesPerMatch,
-        pointsPerGame,
-        pointsBy,
-        winningRequirement,
-        warmupMinutes
-      );
 
-      const p1 = new Player(
-        sanitizePlayerName(player1) as string,
-        1
-      )
+      if(gamesPerMatch % 2 !== 1) {
+        setGamesPerMatchError("Amount should be odd")
+        return;
+      }
 
-      const p2 = new Player(
-        sanitizePlayerName(player2) as string,
-        2
-      )
-    
-      const matchDetails = new MatchDetails(
-        p1, 
-        p2,
-        matchRules
-      );
-    
-      console.log(matchDetails.describe())
+      try {
+        const matchRules = new MatchRules(
+          gamesPerMatch,
+          pointsPerGame,
+          pointsBy,
+          winningRequirement,
+          warmupMinutes
+        );
+  
+        const p1 = new Player(
+          sanitizePlayerName(player1) as string,
+          1
+        )
+  
+        const p2 = new Player(
+          sanitizePlayerName(player2) as string,
+          2
+        )
+      
+        const matchDetails = new MatchDetails(
+          p1, 
+          p2,
+          matchRules
+        );
 
-      navigation.navigate("Warmup", { matchDetails })
+        // Clear errors before leaving the page
+        setPlayer1Error(undefined)
+        setPlayer2Error(undefined)
+        setGamesPerMatchError(undefined)
+  
+        navigation.navigate("Warmup", { matchDetails })
+      } catch (error) {
+        if(error instanceof GameConfigurationError) {
+          console.error("Game Configuration Error", error.message)
+        } else {
+          console.error("An unexpected error occured", error)
+        }
+      }
     };
 
     return {
@@ -100,6 +118,7 @@ export const useMatchCreationViewModel = () => {
         player2Error,
         gamesPerMatch,
         setGamesPerMatch,
+        gamesPerMatchError,
         pointsPerGame,
         setPointsPerGame,
         warmupMinutes,

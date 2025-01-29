@@ -8,10 +8,9 @@ import { PlayerTile } from "./components/PlayerTile";
 import { GameScoreTile } from "./components/GameScoreTile";
 
 type GameScreenRouteProp = RouteProp<AppStackParamList, "GameScreen">;
-type Props = { route: GameScreenRouteProp; };
+type Props = { route: GameScreenRouteProp };
 
 const GameScreen: React.FC<Props> = ({ route }) => {
-
   const {
     player1,
     player2,
@@ -25,57 +24,62 @@ const GameScreen: React.FC<Props> = ({ route }) => {
     winnerText,
     handlePointWin,
     handleToggleServingSide,
-    handleUndo
-} = useGameScreenViewModel(route.params.matchDetails)
+    handleUndo,
+  } = useGameScreenViewModel(route.params.matchDetails);
 
   const player1TileProps = {
     name: player1.getPlayerName(),
     score: score_p1,
     side: servingPlayer === player1.getPlayerId() ? servingSide : undefined,
-    handlePointWin: () => { handlePointWin(player1.getPlayerId()) },
-    handleOnPress: () => { servingPlayer === player1.getPlayerId() && handleToggleServingSide() }
-  }
+    handlePointWin: () => {
+      handlePointWin(player1.getPlayerId());
+    },
+    handleOnPress: () => {
+      servingPlayer === player1.getPlayerId() && handleToggleServingSide();
+    },
+  };
 
   const player2TileProps = {
     name: player2.getPlayerName(),
     score: score_p2,
     side: servingPlayer === player2.getPlayerId() ? servingSide : undefined,
-    handlePointWin: () => { handlePointWin(player2.getPlayerId()) },
-    handleOnPress: () => { servingPlayer === player2.getPlayerId() && handleToggleServingSide() }
-  }
+    handlePointWin: () => {
+      handlePointWin(player2.getPlayerId());
+    },
+    handleOnPress: () => {
+      servingPlayer === player2.getPlayerId() && handleToggleServingSide();
+    },
+  };
 
   const gameScoreTileProps = {
     player1Games: games_p1,
     player2Games: games_p2,
-  }
+  };
 
   useEffect(() => {
-    console.log(`Playing effect with winner text: ${winnerText}`)
-    if(winnerText) {
-      Alert.alert(
-        "Winner!",
-        `${winnerText}`,
-        [
-          { text: "Finish", onPress: () => {} },
-          { text: "Undo", onPress: () => handleUndo(), style:"cancel" },
-        ]
-      )
+    console.log(`Playing effect with winner text: ${winnerText}`);
+    if (winnerText) {
+      Alert.alert("Winner!", `${winnerText}`, [
+        { text: "Finish", onPress: () => {} },
+        { text: "Undo", onPress: () => handleUndo(), style: "cancel" },
+      ]);
     }
-  }, [winnerText])
-
+  }, [winnerText, handleUndo]);
 
   return (
     <View style={styles.container}>
       <Text style={styles.header}>Squash Scoring</Text>
-      {gameOrMatchBallText && <Text style={styles.gameOrMatchBall}>{gameOrMatchBallText}</Text>}
+      {gameOrMatchBallText && (
+        <Text style={styles.gameOrMatchBall}>{gameOrMatchBallText}</Text>
+      )}
       <View style={styles.scoreboard}>
         <PlayerTile {...player1TileProps} />
         <GameScoreTile {...gameScoreTileProps} />
         <PlayerTile {...player2TileProps} />
       </View>
-      <Button title="undo" onPress={handleUndo}/>
+      <Button title="undo" onPress={handleUndo} />
     </View>
   );
-}
+};
 
-export default GameScreen
+export default GameScreen;

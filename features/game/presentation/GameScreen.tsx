@@ -68,7 +68,6 @@ const GameScreen: React.FC<Props> = ({ route }) => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.header}>Squash Scoring</Text>
       {gameOrMatchBallText && (
         <Text style={styles.gameOrMatchBall}>{gameOrMatchBallText}</Text>
       )}

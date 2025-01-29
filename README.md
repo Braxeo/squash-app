@@ -6,43 +6,63 @@ Squash App is a modern application built using Expo, designed to enhance your sq
 
 ## Getting Started
 
-### Prerequisites
-
-Please ensure you have the following installed on your system:
-- Node.js (recommended version: 18.x)
-- Yarn (package manager)
-- Expo CLI
-
 ### Setup Instructions
 
 1. Clone the repository:
+
    ```bash
    git clone https://github.com/Braxeo/squash-app.git
    cd squash-app
    ```
 
 2. Install dependencies:
+
+3. 1. Install asdf:
+      We use 'asdf' to manage tool versions (using the .tool-version file)
+
+   https://asdf-vm.com/guide/getting-started.html
+
+   ```bash
+   brew install asdf
+   ```
+
+   or
+
+   ```bash
+   git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch v0.15.0
+   ```
+
+   Run the 'install_asdf_tools.sh' executable, this will add missing plugins and install the required tool versions
+   You might need to modify the file
+
+   ```bash
+   chmod +x install_asdf_tools.sh
+   ```
+
    ```bash
    yarn install
    ```
 
-3. Set up Husky hooks:
+4. Set up Husky hooks:
    Husky is automatically installed via the prepare script in `package.json`. If it's not, run:
+
    ```bash
    npx husky install
    ```
 
-4. Setup GitHub Personal Access Token:
+5. Setup GitHub Personal Access Token:
+
    - Go to [GitHub Developer Settings](https://github.com/settings/tokens).
    - Create a token with the `repo` and `write:repo_hook` permissions.
    - Copy the token.
 
    Create a `.env.gh` file in the root directory of the project:
+
    ```bash
    GITHUB_TOKEN=ghp_123984239487234
    ```
 
-4. Start the app:
+6. Start the app:
    - Android:
      ```bash
      yarn android
@@ -65,21 +85,27 @@ Please ensure you have the following installed on your system:
 Here are the primary scripts defined in `package.json`:
 
 - Reset Project:
+
   ```bash
   yarn reset-project
   ```
+
   Runs a custom script to reset the project state.
 
 - Run Tests:
+
   ```bash
   yarn test
   ```
+
   Runs all Jest tests once (not in watch mode).
 
 - Run Linting:
+
   ```bash
   yarn lint
   ```
+
   Checks the project codebase for linting issues.
 
 - Run in Watch Mode:
@@ -103,6 +129,7 @@ We follow the **Conventional Commits** standard. All commits must adhere to the 
 - **Description**: A concise summary of the change.
 
 Examples:
+
 - `feat(ui): add login button`
 - `fix(api): resolve timeout issue`
 
@@ -113,13 +140,16 @@ Examples:
 ### Automated Tools
 
 1. **Husky**:
+
    - Enforces pre-commit and commit-msg hooks.
    - Automatically runs linting and tests before commits.
 
 2. **Commitlint**:
+
    - Validates commit messages to ensure they follow Conventional Commits.
 
 3. **Jest**:
+
    - For unit testing and snapshot testing.
 
 4. **ESLint**:
@@ -180,6 +210,7 @@ All branches must follow the naming convention:
   - test: For adding or updating tests
 
 **Examples**:
+
 - feat/add-login-page
 - fix/header-layout-issue
 - docs/update-readme
@@ -189,6 +220,7 @@ All branches must follow the naming convention:
 ### Automatic Pull Request Creation
 
 - **How It Works**:
+
   - When you push a new branch matching the naming convention (e.g., feat/add-login-page), an auto PR workflow automatically creates a pull request targeting the main branch.
   - The pull request includes:
     - The branch name in the title (e.g., Auto-created PR for branch feat/add-login-page).
@@ -208,6 +240,7 @@ All branches must follow the naming convention:
 ### Build-Test-Lint Pipeline
 
 - **Automated Testing and Linting**:
+
   - A GitHub Actions workflow runs automatically on every pull request.
   - The pipeline performs the following checks:
     1. Build: Ensures the code compiles without errors.
@@ -215,12 +248,14 @@ All branches must follow the naming convention:
     3. Lint: Checks code quality and adherence to style guides.
 
 - **How It Works**:
+
   - The workflow is triggered when:
     - A new branch is pushed (for auto PR creation).
     - A pull request is opened or updated.
   - The workflow validates the code changes before the PR can be merged.
 
 - **Failing Pipeline**:
+
   - If any step (build, test, lint) fails, the workflow prevents the PR from being merged.
   - Contributors must fix the issues and push updates to the branch.
 
@@ -247,7 +282,7 @@ All branches must follow the naming convention:
 
 5. Merge the PR:
    Once all checks pass and the PR is approved, merge it into the main branch.
-   
+
 ---
 
 ## License

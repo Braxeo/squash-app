@@ -17,40 +17,41 @@ Squash App is a modern application built using Expo, designed to enhance your sq
 
 2. Install dependencies:
 
-3. 1. Install asdf:
-      We use 'asdf' to manage tool versions (using the .tool-version file)
-
+   Install asdf, we use it to manage tool versions (using the .tool-version file)
    https://asdf-vm.com/guide/getting-started.html
+
+   Use either method to install asdf.
 
    ```bash
    brew install asdf
    ```
 
-   or
-
    ```bash
    git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch v0.15.0
    ```
 
-   Run the 'install_asdf_tools.sh' executable, this will add missing plugins and install the required tool versions
+   Next, run the 'install_asdf_tools.sh' executable, this will add missing plugins and install the required tool versions
+
    You might need to modify the file
 
    ```bash
    chmod +x install_asdf_tools.sh
    ```
 
+   Then once asdf has installed all the plugins and tools, run Yarn (like npm, just another package manager)
+
    ```bash
    yarn install
    ```
 
-4. Set up Husky hooks:
+3. Set up Husky hooks:
    Husky is automatically installed via the prepare script in `package.json`. If it's not, run:
 
    ```bash
    npx husky install
    ```
 
-5. Setup GitHub Personal Access Token:
+4. Setup GitHub Personal Access Token:
 
    - Go to [GitHub Developer Settings](https://github.com/settings/tokens).
    - Create a token with the `repo` and `write:repo_hook` permissions.
@@ -62,7 +63,7 @@ Squash App is a modern application built using Expo, designed to enhance your sq
    GITHUB_TOKEN=ghp_123984239487234
    ```
 
-6. Start the app:
+5. Start the app:
    - Android:
      ```bash
      yarn android

@@ -2,7 +2,7 @@ import React from "react";
 import { createStackNavigator } from "@react-navigation/stack";
 import MatchCreationScreen from "../match-creation/presentation/MatchCreationScreen";
 import WarmupScreen from "../warmup/presentation/WarmupScreen";
-import GameScreen from "../game/GameScreen";
+import GameScreen from "../game/presentation/GameScreen";
 import { MatchDetails } from "../match-creation/domain/MatchDetails";
 
 export type AppStackParamList = {

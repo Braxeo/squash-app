@@ -40,7 +40,12 @@ export const styles = StyleSheet.create({
       marginBottom: 10,
     },
     games: {
-      fontSize: 16,
+      fontSize: 36,
+      fontWeight: "bold",
       marginBottom: 20,
+    },
+    gameOrMatchBall: {
+      fontSize: 16,
+      fontWeight: "bold",
     },
   });

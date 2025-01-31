@@ -1,4 +1,4 @@
-import { TouchableOpacity, View } from "react-native";
+import { TouchableOpacity } from "react-native";
 import { styles } from "../GameScreenStyle";
 import { Text } from "react-native";
 import { Button } from "react-native";

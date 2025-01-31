@@ -1,11 +1,12 @@
 import React, { useEffect } from "react";
-import { Alert, Button, Text, View } from "react-native";
+import { Alert, Text, View } from "react-native";
 import { styles } from "./GameScreenStyle";
 import { useGameScreenViewModel } from "./hooks/useGameScreenViewModel";
 import { RouteProp } from "@react-navigation/native";
 import { AppStackParamList } from "@/features/navigation/AppNavigator";
 import { PlayerTile } from "./components/PlayerTile";
 import { GameScoreTile } from "./components/GameScoreTile";
+import { BasicButton } from "@/core/components/BasicButton";
 
 type GameScreenRouteProp = RouteProp<AppStackParamList, "GameScreen">;
 type Props = { route: GameScreenRouteProp };
@@ -57,7 +58,6 @@ const GameScreen: React.FC<Props> = ({ route }) => {
   };
 
   useEffect(() => {
-    console.log(`Playing effect with winner text: ${winnerText}`);
     if (winnerText) {
       Alert.alert("Winner!", `${winnerText}`, [
         { text: "Finish", onPress: () => {} },
@@ -76,7 +76,12 @@ const GameScreen: React.FC<Props> = ({ route }) => {
         <GameScoreTile {...gameScoreTileProps} />
         <PlayerTile {...player2TileProps} />
       </View>
-      <Button title="undo" onPress={handleUndo} />
+      <BasicButton
+        buttonStyle={styles.undo}
+        textStyle={undefined}
+        title="UNDO"
+        onPress={handleUndo}
+      />
     </View>
   );
 };

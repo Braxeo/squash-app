@@ -7,6 +7,8 @@ import { AppStackParamList } from "@/features/navigation/AppNavigator";
 import { PlayerTile } from "./components/PlayerTile";
 import { GameScoreTile } from "./components/GameScoreTile";
 import { BasicButton } from "@/core/components/BasicButton";
+import { TimerTile } from "./components/TimerTile";
+import { Side } from "../domain/Enums";
 
 type GameScreenRouteProp = RouteProp<AppStackParamList, "GameScreen">;
 type Props = { route: GameScreenRouteProp };
@@ -68,20 +70,32 @@ const GameScreen: React.FC<Props> = ({ route }) => {
 
   return (
     <View style={styles.container}>
-      {gameOrMatchBallText && (
-        <Text style={styles.gameOrMatchBall}>{gameOrMatchBallText}</Text>
-      )}
-      <View style={styles.scoreboard}>
-        <PlayerTile {...player1TileProps} />
-        <GameScoreTile {...gameScoreTileProps} />
-        <PlayerTile {...player2TileProps} />
+      <View style={styles.header}>
+        {gameOrMatchBallText && (
+          <Text style={styles.gameOrMatchBall}>{gameOrMatchBallText}</Text>
+        )}
+        <View style={styles.scoreboard}>
+          <PlayerTile {...player1TileProps} />
+          <GameScoreTile {...gameScoreTileProps} />
+          <PlayerTile {...player2TileProps} />
+        </View>
       </View>
-      <BasicButton
-        buttonStyle={styles.undo}
-        textStyle={undefined}
-        title="UNDO"
-        onPress={handleUndo}
-      />
+      <View style={styles.footer}>
+        <View style={styles.timerBox}>
+          <TimerTile
+            title="Match Time"
+            seconds={15 * 60}
+            iconSide={Side.LEFT}
+          />
+          <TimerTile title="Game Time" seconds={0} iconSide={Side.RIGHT} />
+        </View>
+        <BasicButton
+          buttonStyle={styles.undo}
+          textStyle={undefined}
+          title="UNDO"
+          onPress={handleUndo}
+        />
+      </View>
     </View>
   );
 };

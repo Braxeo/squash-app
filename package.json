@@ -19,6 +19,10 @@
   "dependencies": {
     "@expo/vector-icons": "^14.0.2",
     "@react-native-picker/picker": "^2.11.0",
+    "@react-native-vector-icons/common": "^11.0.0",
+    "@react-native-vector-icons/evil-icons": "^1.10.1",
+    "@react-native-vector-icons/fontawesome6": "^6.7.1",
+    "@react-native-vector-icons/material-icons": "^0.0.1",
     "@react-navigation/bottom-tabs": "^7.2.0",
     "@react-navigation/native": "^7.0.14",
     "@react-navigation/stack": "^7.1.1",

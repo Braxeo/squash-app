@@ -1,8 +1,8 @@
 import React from "react";
 import { Text } from "react-native";
-import { CustomDropDownPicker } from "./CustomDropDownPicker";
-import { PointsBy } from "@/features/rules/constants/Enums";
+import { CustomDropDownPicker } from "../../../../core/components/CustomDropDownPicker";
 import { styles } from "../MatchCreationScreenStyle";
+import { PointsBy } from "@/core/constants/Enums";
 
 interface PointsPerDropDownPickerProps {
   pointsBy: PointsBy;

@@ -1,9 +1,9 @@
 import { useTimer } from "@/core/hooks/useTimer";
-import { Side } from "@/features/game/domain/Enums";
-import { MatchDetails } from "@/features/match-creation/domain/MatchDetails";
-import { AppStackParamList } from "@/features/navigation/AppNavigator";
+import { Side } from "@/core/constants/Enums";
+import { AppStackParamList } from "@/core/navigation/AppNavigator";
 import { useNavigation } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
+import { MatchDetails } from "@/core/models/MatchDetails";
 
 export const useWarmupScreenViewModel = (matchDetails: MatchDetails) => {
   type WarmupScreenNavigationProp = StackNavigationProp<

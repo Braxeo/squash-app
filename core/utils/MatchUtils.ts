@@ -1,4 +1,4 @@
-import { MatchDetails } from "../match-creation/domain/MatchDetails";
+import { MatchDetails } from "../models/MatchDetails";
 import { isOnGameBall } from "./GameUtils";
 
 /**

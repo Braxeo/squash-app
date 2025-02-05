@@ -1,7 +1,7 @@
-import { TimerConfigurationError } from "@/features/errors/TimerConfigurationError";
-import { Side } from "@/features/game/domain/Enums";
-import { formatTime } from "@/features/utils/TimerUtils";
+import { TimerConfigurationError } from "@/core/errors/TimerConfigurationError";
+import { Side } from "@/core/constants/Enums";
 import { useRef, useState } from "react";
+import { formatTime } from "../utils/TimerUtils";
 
 type TimerProps = {
   seconds: number;

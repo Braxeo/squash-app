@@ -1,6 +1,5 @@
+import { PointsBy, WinningRequirement } from "../constants/Enums";
 import { GameConfigurationError } from "../errors/GameConfigurationError";
-import { PointsBy } from "./constants/Enums";
-import { WinningRequirement } from "./constants/Enums";
 
 export class MatchRules {
   private gamesPerMatch: number;

@@ -3,12 +3,12 @@ import { Alert, Text, View } from "react-native";
 import { styles } from "./GameScreenStyle";
 import { useGameScreenViewModel } from "./hooks/useGameScreenViewModel";
 import { RouteProp } from "@react-navigation/native";
-import { AppStackParamList } from "@/features/navigation/AppNavigator";
+import { AppStackParamList } from "@/core/navigation/AppNavigator";
 import { PlayerTile } from "./components/PlayerTile";
 import { GameScoreTile } from "./components/GameScoreTile";
 import { BasicButton } from "@/core/components/BasicButton";
 import { TimerTile } from "./components/TimerTile";
-import { Side } from "../domain/Enums";
+import { Side } from "../../../core/constants/Enums";
 
 type GameScreenRouteProp = RouteProp<AppStackParamList, "GameScreen">;
 type Props = { route: GameScreenRouteProp };

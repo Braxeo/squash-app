@@ -1,6 +1,6 @@
 import React, { Dispatch, SetStateAction, useState } from "react";
 import DropDownPicker from "react-native-dropdown-picker";
-import { styles } from "../MatchCreationScreenStyle";
+import { styles } from "../../features/match-creation/presentation/MatchCreationScreenStyle";
 
 interface CustomDropDownPickerProps {
   selectedValue: any;

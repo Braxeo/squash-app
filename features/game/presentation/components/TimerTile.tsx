@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { Side } from "../../domain/Enums";
+import { Side } from "../../../../core/constants/Enums";
 import { View } from "react-native";
 import { StyleSheet } from "react-native";
 import { Text } from "react-native";

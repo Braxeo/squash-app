@@ -1,21 +1,20 @@
-import { Entry } from "@/features/match-creation/domain/GameLog";
-import { MatchDetails } from "@/features/match-creation/domain/MatchDetails";
-import { PointsBy } from "@/features/rules/constants/Enums";
 import { useState } from "react";
-import { Side } from "../../domain/Enums";
-import { toggleSide } from "../../../utils/SideUtils";
+import { PointsBy, Side } from "../../../../core/constants/Enums";
+import { MatchValidationError } from "@/core/errors/MatchValidationError";
+import { GameValidationError } from "@/core/errors/GameValidationError";
+import { Entry } from "@/core/models/GameLog";
+import { MatchDetails } from "@/core/models/MatchDetails";
 import {
   getPointsForPlayer,
-  getServingPlayer,
   getServingPlayersLastSide,
-} from "../../../utils/GameLogUtils";
+  getServingPlayer,
+} from "@/core/utils/GameLogUtils";
+import { gameWinner } from "@/core/utils/GameUtils";
 import {
   calculateGameOrMatchBallText,
   calculateMatchWinningPlayer,
-} from "@/features/utils/MatchUtils";
-import { MatchValidationError } from "@/features/errors/MatchValidationError";
-import { gameWinner } from "@/features/utils/GameUtils";
-import { GameValidationError } from "@/features/errors/GameValidationError";
+} from "@/core/utils/MatchUtils";
+import { toggleSide } from "@/core/utils/SideUtils";
 
 export const useGameScreenViewModel = (matchDetails: MatchDetails) => {
   const { player1, player2, player1Games, player2Games, gameLog, matchRules } =

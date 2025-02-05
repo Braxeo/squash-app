@@ -3,7 +3,7 @@ import { styles } from "../GameScreenStyle";
 import { Text } from "react-native";
 import { Button } from "react-native";
 import React from "react";
-import { Side } from "../../domain/Enums";
+import { Side } from "../../../../core/constants/Enums";
 
 type PlayerTileProps = {
   name: string;

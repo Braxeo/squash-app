@@ -5,7 +5,7 @@ import { formatTime } from "../utils/TimerUtils";
 
 type TimerProps = {
   seconds: number;
-  direction: Side;
+  direction: Side | Side.UP | Side.DOWN;
   onTimerFinished: () => void;
 };
 
@@ -67,5 +67,6 @@ export const useTimer = (props: TimerProps) => {
     setIsTimerRunning,
     isTimerFinished,
     setIsTimerFinished,
+    time,
   };
 };

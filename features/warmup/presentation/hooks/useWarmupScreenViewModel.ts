@@ -4,6 +4,8 @@ import { AppStackParamList } from "@/core/navigation/AppNavigator";
 import { useNavigation } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { MatchDetails } from "@/core/models/MatchDetails";
+import { Alert } from "react-native";
+import { Player } from "@/core/models/Player";
 
 export const useWarmupScreenViewModel = (matchDetails: MatchDetails) => {
   type WarmupScreenNavigationProp = StackNavigationProp<
@@ -30,8 +32,38 @@ export const useWarmupScreenViewModel = (matchDetails: MatchDetails) => {
     setIsTimerFinished(true);
   };
 
+  const startNewGame = (server: Player) => {
+    matchDetails.startNextGame(server, Side.RIGHT);
+  };
+
+  const promptForServer = (onComplete: () => void) => {
+    Alert.alert(
+      `Select Player to Serve`,
+      `Please choose a Player`,
+      [
+        {
+          text: `${matchDetails.player1.getPlayerName()}`,
+          onPress: () => {
+            startNewGame(matchDetails.player1);
+            onComplete();
+          },
+        },
+        {
+          text: `${matchDetails.player2.getPlayerName()}`,
+          onPress: () => {
+            startNewGame(matchDetails.player2);
+            onComplete();
+          },
+        },
+      ],
+      { cancelable: false }
+    );
+  };
+
   const handleStartGame = () => {
-    navigation.navigate("GameScreen", { matchDetails });
+    promptForServer(() => {
+      navigation.navigate("GameScreen", { matchDetails });
+    });
   };
 
   const {

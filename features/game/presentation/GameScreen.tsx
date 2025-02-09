@@ -1,5 +1,5 @@
-import React, { useEffect } from "react";
-import { Alert, Text, View } from "react-native";
+import React, { useEffect, useState } from "react";
+import { Text, View } from "react-native";
 import { styles } from "./GameScreenStyle";
 import { useGameScreenViewModel } from "./hooks/useGameScreenViewModel";
 import { RouteProp } from "@react-navigation/native";
@@ -9,6 +9,7 @@ import { GameScoreTile } from "./components/GameScoreTile";
 import { BasicButton } from "@/core/components/BasicButton";
 import { TimerTile } from "./components/TimerTile";
 import { Side } from "../../../core/constants/Enums";
+import BasicModal from "@/core/components/BasicModal";
 
 type GameScreenRouteProp = RouteProp<AppStackParamList, "GameScreen">;
 type Props = { route: GameScreenRouteProp };
@@ -28,7 +29,22 @@ const GameScreen: React.FC<Props> = ({ route }) => {
     handlePointWin,
     handleToggleServingSide,
     handleUndo,
+    duration,
+    setDuration,
   } = useGameScreenViewModel(route.params.matchDetails);
+
+  const [currentGameTime, setCurrentGameTime] = useState(duration);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentGameTime((prev: number) => {
+        setDuration(prev + 1);
+        return prev + 1;
+      });
+    }, 1000);
+
+    return () => clearInterval(interval); // Cleanup on unmount
+  }, [setDuration]);
 
   const player1TileProps = {
     name: player1.getPlayerName(),
@@ -59,17 +75,44 @@ const GameScreen: React.FC<Props> = ({ route }) => {
     player2Games: games_p2,
   };
 
-  useEffect(() => {
-    if (winnerText) {
-      Alert.alert("Winner!", `${winnerText}`, [
-        { text: "Finish", onPress: () => {} },
-        { text: "Undo", onPress: () => handleUndo(), style: "cancel" },
-      ]);
-    }
-  }, [winnerText, handleUndo]);
-
   return (
     <View style={styles.container}>
+      {winnerText && (
+        <BasicModal
+          title="Winner!"
+          visible={true}
+          message={`${winnerText}`}
+          content={() => {
+            return (
+              <View
+                style={{
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                  width: "100%",
+                }}
+              >
+                <BasicButton
+                  buttonStyle={{
+                    width: "auto",
+                  }}
+                  textStyle={undefined}
+                  title="Finish"
+                  onPress={handleUndo}
+                />
+
+                <BasicButton
+                  buttonStyle={{
+                    width: "auto",
+                  }}
+                  textStyle={undefined}
+                  title="Undo"
+                  onPress={handleUndo}
+                />
+              </View>
+            );
+          }}
+        />
+      )}
       <View style={styles.header}>
         {gameOrMatchBallText && (
           <Text style={styles.gameOrMatchBall}>{gameOrMatchBallText}</Text>
@@ -87,10 +130,14 @@ const GameScreen: React.FC<Props> = ({ route }) => {
             seconds={15 * 60}
             iconSide={Side.LEFT}
           />
-          <TimerTile title="Game Time" seconds={0} iconSide={Side.RIGHT} />
+          <TimerTile
+            title="Game Time"
+            seconds={currentGameTime}
+            iconSide={Side.RIGHT}
+          />
         </View>
         <BasicButton
-          buttonStyle={styles.undo}
+          buttonStyle={{ width: "100%" }}
           textStyle={undefined}
           title="UNDO"
           onPress={handleUndo}

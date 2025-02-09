@@ -4,47 +4,64 @@ import { MatchValidationError } from "@/core/errors/MatchValidationError";
 import { GameValidationError } from "@/core/errors/GameValidationError";
 import { Entry } from "@/core/models/GameLog";
 import { MatchDetails } from "@/core/models/MatchDetails";
-import {
-  getPointsForPlayer,
-  getServingPlayersLastSide,
-  getServingPlayer,
-} from "@/core/utils/GameLogUtils";
-import { gameWinner } from "@/core/utils/GameUtils";
-import {
-  calculateGameOrMatchBallText,
-  calculateMatchWinningPlayer,
-} from "@/core/utils/MatchUtils";
 import { toggleSide } from "@/core/utils/SideUtils";
+import { GameConfigurationError } from "@/core/errors/GameConfigurationError";
+import { gameLogUtils } from "@/core/utils/GameLogUtils";
+import { matchUtils } from "@/core/utils/MatchUtils";
+import { gameUtils } from "@/core/utils/GameUtils";
 
 export const useGameScreenViewModel = (matchDetails: MatchDetails) => {
-  const { player1, player2, player1Games, player2Games, gameLog, matchRules } =
-    matchDetails;
+  const {
+    player1,
+    player2,
+    player1Games,
+    player2Games,
+    currentGame,
+    matchRules,
+  } = matchDetails;
+
+  if (currentGame === undefined) {
+    throw new GameConfigurationError("Current game should not be undefined");
+  }
+
+  const {
+    getPointsForPlayer,
+    getServingPlayersLastSide,
+    getServingPlayer,
+    setServingPlayerAndSide,
+    undo,
+  } = gameLogUtils(currentGame);
+
+  const { gameWinner } = gameUtils(currentGame, matchRules);
+
+  const { calculateGameOrMatchBallText, calculateMatchWinningPlayer } =
+    matchUtils(matchDetails);
 
   const [score_p1, setPlayer1Score] = useState(
-    getPointsForPlayer(player1.getPlayerId(), gameLog)
+    getPointsForPlayer(player1.getPlayerId())
   );
   const [score_p2, setPlayer2Score] = useState(
-    getPointsForPlayer(player2.getPlayerId(), gameLog)
+    getPointsForPlayer(player2.getPlayerId())
   );
   const [games_p1, setPlayer1Games] = useState(player1Games);
   const [games_p2, setPlayer2Games] = useState(player2Games);
 
   // Get stored last serving side from gameLog, toggle as this was where they scored their last point from,
   // otherwise default to Right side
-  const lastServeSide = getServingPlayersLastSide(gameLog);
-  const startingServeSize = lastServeSide
+  const lastServeSide = getServingPlayersLastSide();
+  const startingServeSide = lastServeSide
     ? toggleSide(lastServeSide)
     : Side.RIGHT;
-  const [servingSide, setServingSide] = useState<Side>(startingServeSize);
+  const [servingSide, setServingSide] = useState<Side>(startingServeSide);
 
   // Get stored serving player from gameLog, otherwise default to player 1
   const [servingPlayer, setServingPlayer] = useState<number>(
-    getServingPlayer(gameLog) ?? player1.getPlayerId()
+    getServingPlayer() ?? player1.getPlayerId()
   );
 
   const [gameOrMatchBallText, setGameOrMatchBallText] = useState<
     string | undefined
-  >(calculateGameOrMatchBallText(matchDetails));
+  >(calculateGameOrMatchBallText());
 
   // Winner of the game
   const [winnerText, setWinnerText] = useState<string | undefined>();
@@ -62,14 +79,14 @@ export const useGameScreenViewModel = (matchDetails: MatchDetails) => {
           updateGameOrMatchBall();
 
           // Continue serving and change sides
-          handleToggleServingSide();
+          setServingSide(toggleSide(servingSide));
 
           // Check if the player has won!
           updatePlayerWonState();
         } else {
           // Add a new entry into the gameLog, so that we know they've won the last rally
           // no point was awarded, but the change of server still occurs
-          gameLog.addEntry(new Entry(playerId, undefined, undefined));
+          currentGame.addEntry(new Entry(playerId, undefined, undefined));
           // Set as serving player
           setServingPlayer(playerId);
           // Default serving side to RIGHT
@@ -89,7 +106,7 @@ export const useGameScreenViewModel = (matchDetails: MatchDetails) => {
           setServingSide(Side.RIGHT);
         } else {
           // Continue serving and change sides
-          handleToggleServingSide();
+          setServingSide(toggleSide(servingSide));
         }
 
         // Update the game or match ball text
@@ -106,12 +123,16 @@ export const useGameScreenViewModel = (matchDetails: MatchDetails) => {
   };
 
   const handleToggleServingSide = () => {
-    setServingSide(toggleSide(servingSide));
+    const newServingSide = toggleSide(servingSide);
+    // Update gamelog
+    setServingPlayerAndSide(servingPlayer, newServingSide);
+    // Update ui state
+    setServingSide(newServingSide);
   };
 
   const incrementPlayerScore = (playerId: number) => {
     // TODO change to a Player object with PlayerID
-    gameLog.addEntry(new Entry(playerId, servingSide, 1));
+    currentGame.addEntry(new Entry(playerId, servingSide, 1));
     if (playerId === player1.getPlayerId()) {
       setPlayer1Score(score_p1 + 1);
     }
@@ -121,34 +142,41 @@ export const useGameScreenViewModel = (matchDetails: MatchDetails) => {
     }
   };
 
+  const setDuration = (newDuration: number) => {
+    currentGame.setDuration(newDuration);
+  };
+
   const handleUndo = () => {
-    gameLog.undo();
+    undo();
 
     // Update scores
-    setPlayer1Score(getPointsForPlayer(player1.getPlayerId(), gameLog));
-    setPlayer2Score(getPointsForPlayer(player2.getPlayerId(), gameLog));
+    setPlayer1Score(getPointsForPlayer(player1.getPlayerId()));
+    setPlayer2Score(getPointsForPlayer(player2.getPlayerId()));
 
     // Update serving side
-    const lastServeSide = getServingPlayersLastSide(gameLog);
-    const startingServeSize = lastServeSide
+    const lastServeSide = getServingPlayersLastSide();
+    const startingServeSide = lastServeSide
       ? toggleSide(lastServeSide)
       : Side.RIGHT;
-    setServingSide(startingServeSize);
+    setServingSide(startingServeSide);
 
     // Update serving player
-    setServingPlayer(getServingPlayer(gameLog) ?? player1.getPlayerId());
+    setServingPlayer(getServingPlayer() ?? player1.getPlayerId());
 
     // Update the game / match ball text
     updateGameOrMatchBall();
+
+    // Update the winner text
+    updatePlayerWonState();
   };
 
   const updateGameOrMatchBall = () => {
-    setGameOrMatchBallText(calculateGameOrMatchBallText(matchDetails));
+    setGameOrMatchBallText(calculateGameOrMatchBallText());
   };
 
   const updatePlayerWonState = () => {
     // Check for a match winner
-    const matchWinningPlayer = calculateMatchWinningPlayer(matchDetails);
+    const matchWinningPlayer = calculateMatchWinningPlayer();
     if (matchWinningPlayer) {
       if (matchWinningPlayer === player1.getPlayerId()) {
         setWinnerText(`${player1.getPlayerName()} has won the match`);
@@ -163,7 +191,7 @@ export const useGameScreenViewModel = (matchDetails: MatchDetails) => {
     }
 
     // Check for a game winner
-    const gameWinningPlayer = gameWinner(gameLog, matchRules);
+    const gameWinningPlayer = gameWinner();
     if (gameWinningPlayer) {
       if (gameWinningPlayer === player1.getPlayerId()) {
         setWinnerText(`${player1.getPlayerName()} has won the game`);
@@ -195,5 +223,7 @@ export const useGameScreenViewModel = (matchDetails: MatchDetails) => {
     handlePointWin,
     handleToggleServingSide,
     handleUndo,
+    duration: currentGame.getDuration() ?? 0,
+    setDuration,
   };
 };

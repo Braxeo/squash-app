@@ -3,16 +3,26 @@ import { Side } from "@/core/constants/Enums";
 export class GameLog {
   private entries: Entry[];
 
+  /**
+   * Amount of seconds this game has been active for
+   */
+  private duration: number;
+
   constructor() {
     this.entries = [];
+    this.duration = 0;
+  }
+
+  public getDuration(): number {
+    return this.duration;
+  }
+
+  public setDuration(newDuration: number) {
+    this.duration = newDuration;
   }
 
   public addEntry(entry: Entry) {
     this.entries.push(entry);
-  }
-
-  public undo() {
-    this.entries.pop();
   }
 
   public getEntries(): Entry[] {
@@ -20,9 +30,12 @@ export class GameLog {
   }
 
   public describe(): string {
-    return this.entries.length > 0
-      ? this.entries.map((entry) => entry.describe()).join(", ")
-      : "No entries recorded.";
+    // Use the describe method on each Entry object.
+    const entriesDescription = this.entries
+      .map((entry) => entry.describe())
+      .join("\n");
+
+    return `GameLog (duration: ${this.duration}ms) with entries: [${entriesDescription}]`;
   }
 }
 

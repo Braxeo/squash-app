@@ -1,6 +1,4 @@
-import { Side } from "../constants/Enums";
-import { toggleSide } from "../utils/SideUtils";
-import { Entry, GameLog } from "./GameLog";
+import { GameLog } from "./GameLog";
 import { MatchRules } from "./MatchRules";
 import { Player } from "./Player";
 
@@ -29,41 +27,6 @@ export class MatchDetails {
     this.player2Games = player2Games;
     this.gameLogs = gameLogs;
     this.currentGame = currentGame;
-  }
-
-  public startNextGame(server: Player, side: Side) {
-    this.archiveCurrentGame();
-    this.currentGame = new GameLog();
-    this.currentGame.addEntry(
-      new Entry(
-        server.getPlayerId(),
-        // Toggle side so we start on the expected side
-        toggleSide(side),
-        undefined
-      )
-    );
-  }
-
-  private archiveCurrentGame() {
-    if (this.currentGame) {
-      this.gameLogs.push(this.currentGame);
-    }
-    this.currentGame = undefined;
-  }
-
-  public getCurrentGameDuration(): number {
-    return this.currentGame?.getDuration() ?? 0;
-  }
-
-  /**
-   * Decision - Warmup is not counted in match duration.
-   * @returns The total duration in seconds of the previous + current games.
-   */
-  public getMatchDuration(): number {
-    return (
-      this.gameLogs.reduce((total, log) => total + log.getDuration(), 0) +
-      (this.currentGame?.getDuration() ?? 0)
-    );
   }
 
   public describe(): string {

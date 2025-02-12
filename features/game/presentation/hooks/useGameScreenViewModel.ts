@@ -32,10 +32,16 @@ export const useGameScreenViewModel = (matchDetails: MatchDetails) => {
     undo,
   } = gameLogUtils(currentGame);
 
-  const { gameWinner } = gameUtils(currentGame, matchRules);
+  const { gameWinner, updateGameDuration } = gameUtils(currentGame, matchRules);
 
-  const { calculateGameOrMatchBallText, calculateMatchWinningPlayer } =
-    matchUtils(matchDetails);
+  const {
+    calculateGameOrMatchBallText,
+    calculateMatchWinningPlayer,
+    getMatchDuration,
+    getCurrentGameDuration,
+    startNextGame,
+    archiveCurrentGame,
+  } = matchUtils(matchDetails);
 
   const [score_p1, setPlayer1Score] = useState(
     getPointsForPlayer(player1.getPlayerId())
@@ -80,9 +86,6 @@ export const useGameScreenViewModel = (matchDetails: MatchDetails) => {
 
           // Continue serving and change sides
           setServingSide(toggleSide(servingSide));
-
-          // Check if the player has won!
-          updatePlayerWonState();
         } else {
           // Add a new entry into the gameLog, so that we know they've won the last rally
           // no point was awarded, but the change of server still occurs
@@ -108,18 +111,18 @@ export const useGameScreenViewModel = (matchDetails: MatchDetails) => {
           // Continue serving and change sides
           setServingSide(toggleSide(servingSide));
         }
-
-        // Update the game or match ball text
-        updateGameOrMatchBall();
-
-        // Check if the player has won!
-        updatePlayerWonState();
         break;
       }
       default: {
         break;
       }
     }
+
+    // Update the game or match ball text
+    updateGameOrMatchBall();
+
+    // Check if the player has won!
+    updatePlayerWonState();
   };
 
   const handleToggleServingSide = () => {
@@ -143,7 +146,13 @@ export const useGameScreenViewModel = (matchDetails: MatchDetails) => {
   };
 
   const setDuration = (newDuration: number) => {
-    currentGame.setDuration(newDuration);
+    updateGameDuration(newDuration);
+  };
+
+  const handleFinish = () => {
+    // Archive game
+    archiveCurrentGame();
+    // Move to match summary screen
   };
 
   const handleUndo = () => {
@@ -223,6 +232,7 @@ export const useGameScreenViewModel = (matchDetails: MatchDetails) => {
     handlePointWin,
     handleToggleServingSide,
     handleUndo,
+    handleFinish,
     duration: currentGame.getDuration() ?? 0,
     setDuration,
   };

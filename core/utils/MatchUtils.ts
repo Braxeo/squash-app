@@ -1,8 +1,12 @@
+import { Side } from "../constants/Enums";
+import { Entry, GameLog } from "../models/GameLog";
 import { MatchDetails } from "../models/MatchDetails";
+import { Player } from "../models/Player";
 import { gameUtils } from "./GameUtils";
+import { toggleSide } from "./SideUtils";
 
 export const matchUtils = (matchDetails: MatchDetails) => {
-  const { currentGame, matchRules } = matchDetails;
+  const { currentGame, matchRules, gameLogs } = matchDetails;
 
   let isOnGameBall = () => false;
   /**
@@ -79,5 +83,49 @@ export const matchUtils = (matchDetails: MatchDetails) => {
     return undefined;
   };
 
-  return { calculateGameOrMatchBallText, calculateMatchWinningPlayer };
+  const archiveCurrentGame = () => {
+    if (currentGame) {
+      gameLogs.push(currentGame);
+    }
+    matchDetails.currentGame = undefined;
+    console.log(`Testing old current: ${currentGame}`);
+    console.log(`Testing new current: ${matchDetails.currentGame}`);
+  };
+
+  const startNextGame = (server: Player, side: Side) => {
+    archiveCurrentGame();
+    matchDetails.currentGame = new GameLog();
+    currentGame?.addEntry(
+      new Entry(
+        server.getPlayerId(),
+        // Toggle side so we start on the expected side
+        toggleSide(side),
+        undefined
+      )
+    );
+  };
+
+  const getCurrentGameDuration = (): number => {
+    return currentGame?.getDuration() ?? 0;
+  };
+
+  /**
+   * Decision - Warmup is not counted in match duration.
+   * @returns The total duration in seconds of the previous + current games.
+   */
+  const getMatchDuration = (): number => {
+    return (
+      gameLogs.reduce((total, log) => total + log.getDuration(), 0) +
+      (currentGame?.getDuration() ?? 0)
+    );
+  };
+
+  return {
+    calculateGameOrMatchBallText,
+    calculateMatchWinningPlayer,
+    getMatchDuration,
+    getCurrentGameDuration,
+    startNextGame,
+    archiveCurrentGame,
+  };
 };

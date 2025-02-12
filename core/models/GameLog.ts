@@ -7,6 +7,8 @@ export class GameLog {
    * Amount of seconds this game has been active for
    */
   private duration: number;
+  private startDate: Date | undefined;
+  private endDate: Date | undefined;
 
   constructor() {
     this.entries = [];
@@ -19,6 +21,22 @@ export class GameLog {
 
   public setDuration(newDuration: number) {
     this.duration = newDuration;
+  }
+
+  public setStartDate(date: Date) {
+    this.startDate = date;
+  }
+
+  public getStartDate(): Date | undefined {
+    return this.startDate;
+  }
+
+  public setEndDate(date: Date) {
+    this.endDate = date;
+  }
+
+  public getEndDate(): Date | undefined {
+    return this.endDate;
   }
 
   public addEntry(entry: Entry) {

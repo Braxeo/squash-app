@@ -90,8 +90,8 @@ export const gameUtils = (gameLog: GameLog, matchRules: MatchRules) => {
           if (player1Points > player2Points && player1Points >= pointsPerGame)
             return playerIds.at(0);
           // Check if P2 is winner
-          if (player1Points > player2Points && player1Points >= pointsPerGame)
-            return playerIds.at(0);
+          if (player2Points > player1Points && player2Points >= pointsPerGame)
+            return playerIds.at(1);
         }
 
         // No winner
@@ -101,5 +101,18 @@ export const gameUtils = (gameLog: GameLog, matchRules: MatchRules) => {
         throw Error(`Winning Requirement not checked: ${winningRequirement}`);
     }
   };
-  return { isOnGameBall, gameWinner };
+
+  const updateGameDuration = (newDuration: number) => {
+    // Add start date if there is none
+    if (gameLog.getStartDate() === undefined) {
+      gameLog.setStartDate(new Date());
+    }
+
+    // Update the running duration
+    gameLog.setDuration(newDuration);
+
+    // Update the end date
+    gameLog.setEndDate(new Date());
+  };
+  return { isOnGameBall, gameWinner, updateGameDuration };
 };

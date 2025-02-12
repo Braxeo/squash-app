@@ -6,7 +6,7 @@ import { RouteProp } from "@react-navigation/native";
 import { AppStackParamList } from "@/core/navigation/AppNavigator";
 import { PlayerTile } from "./components/PlayerTile";
 import { GameScoreTile } from "./components/GameScoreTile";
-import { BasicButton } from "@/core/components/BasicButton";
+import { BasicButton, basicButtonStyle } from "@/core/components/BasicButton";
 import { TimerTile } from "./components/TimerTile";
 import { Side } from "../../../core/constants/Enums";
 import BasicModal from "@/core/components/BasicModal";
@@ -29,6 +29,7 @@ const GameScreen: React.FC<Props> = ({ route }) => {
     handlePointWin,
     handleToggleServingSide,
     handleUndo,
+    handleFinish,
     duration,
     setDuration,
   } = useGameScreenViewModel(route.params.matchDetails);
@@ -92,18 +93,14 @@ const GameScreen: React.FC<Props> = ({ route }) => {
                 }}
               >
                 <BasicButton
-                  buttonStyle={{
-                    width: "auto",
-                  }}
+                  buttonStyle={basicButtonStyle.button}
                   textStyle={undefined}
                   title="Finish"
-                  onPress={handleUndo}
+                  onPress={handleFinish}
                 />
 
                 <BasicButton
-                  buttonStyle={{
-                    width: "auto",
-                  }}
+                  buttonStyle={basicButtonStyle.button}
                   textStyle={undefined}
                   title="Undo"
                   onPress={handleUndo}
@@ -114,9 +111,14 @@ const GameScreen: React.FC<Props> = ({ route }) => {
         />
       )}
       <View style={styles.header}>
-        {gameOrMatchBallText && (
-          <Text style={styles.gameOrMatchBall}>{gameOrMatchBallText}</Text>
-        )}
+        <Text
+          style={[
+            styles.gameOrMatchBall,
+            { opacity: gameOrMatchBallText !== undefined ? 1 : 0 },
+          ]}
+        >
+          {gameOrMatchBallText}
+        </Text>
         <View style={styles.scoreboard}>
           <PlayerTile {...player1TileProps} />
           <GameScoreTile {...gameScoreTileProps} />

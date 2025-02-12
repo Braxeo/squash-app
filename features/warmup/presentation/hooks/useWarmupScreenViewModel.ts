@@ -6,6 +6,7 @@ import { StackNavigationProp } from "@react-navigation/stack";
 import { MatchDetails } from "@/core/models/MatchDetails";
 import { Alert } from "react-native";
 import { Player } from "@/core/models/Player";
+import { matchUtils } from "@/core/utils/MatchUtils";
 
 export const useWarmupScreenViewModel = (matchDetails: MatchDetails) => {
   type WarmupScreenNavigationProp = StackNavigationProp<
@@ -16,6 +17,7 @@ export const useWarmupScreenViewModel = (matchDetails: MatchDetails) => {
   const { player1, player2, matchRules } = matchDetails;
   const { warmupMinutes } = matchRules;
   const navigation = useNavigation<WarmupScreenNavigationProp>();
+  const { startNextGame } = matchUtils(matchDetails);
 
   const handleTimerStart = () => {
     setIsTimerRunning(!isTimerRunning); // Toggle for pause / start
@@ -33,7 +35,7 @@ export const useWarmupScreenViewModel = (matchDetails: MatchDetails) => {
   };
 
   const startNewGame = (server: Player) => {
-    matchDetails.startNextGame(server, Side.RIGHT);
+    startNextGame(server, Side.RIGHT);
   };
 
   const promptForServer = (onComplete: () => void) => {

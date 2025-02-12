@@ -12,15 +12,15 @@ import { useThemeColor } from "@/core/hooks/useThemeColor";
 import { ColorName } from "@/core/colors/Colors";
 
 type BasicButtonProps = {
-  buttonStyle: StyleProp<ViewStyle>;
+  buttonStyle: StyleProp<ViewStyle> | undefined;
   textStyle: StyleProp<TextStyle>;
   title: string;
   onPress: () => void;
 };
 
 export const BasicButton: React.FC<BasicButtonProps> = ({
-  buttonStyle,
-  textStyle,
+  buttonStyle = basicButtonStyle.button,
+  textStyle = basicButtonStyle.buttonText,
   title,
   onPress,
 }: BasicButtonProps) => {
@@ -30,7 +30,7 @@ export const BasicButton: React.FC<BasicButtonProps> = ({
   return (
     <TouchableOpacity
       style={[
-        styles.button,
+        basicButtonStyle.button,
         {
           backgroundColor:
             Platform.OS === "android" ? buttonBackgroundColor : "transparent",
@@ -42,7 +42,7 @@ export const BasicButton: React.FC<BasicButtonProps> = ({
     >
       <Text
         style={[
-          styles.buttonText,
+          basicButtonStyle.buttonText,
           { color: Platform.OS === "ios" ? buttonTextColor : buttonTextColor },
           textStyle,
         ]}
@@ -53,7 +53,7 @@ export const BasicButton: React.FC<BasicButtonProps> = ({
   );
 };
 
-const styles = StyleSheet.create({
+export const basicButtonStyle = StyleSheet.create({
   button: {
     paddingVertical: 10,
     paddingHorizontal: 16,

@@ -16,7 +16,7 @@ export const useTimer = (props: TimerProps) => {
   const [time, setTime] = useState(seconds);
   const timerRef = useRef<NodeJS.Timeout | null>(null); // Store the timer reference
 
-  const updateTimer = () => {
+  const startTimer = () => {
     if (direction === Side.UP) {
       if (isTimerRunning) {
         timerRef.current = setInterval(() => {
@@ -62,11 +62,12 @@ export const useTimer = (props: TimerProps) => {
 
   return {
     timerText,
-    updateTimer,
+    startTimer,
     isTimerRunning,
     setIsTimerRunning,
     isTimerFinished,
     setIsTimerFinished,
+    setTime,
     time,
   };
 };

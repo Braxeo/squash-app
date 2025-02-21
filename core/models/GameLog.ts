@@ -7,8 +7,8 @@ export class GameLog {
    * Amount of seconds this game has been active for
    */
   private duration: number;
-  private startDate: Date | undefined;
-  private endDate: Date | undefined;
+  private startDate: number | undefined;
+  private endDate: number | undefined;
 
   constructor() {
     this.entries = [];
@@ -16,27 +16,47 @@ export class GameLog {
   }
 
   public getDuration(): number {
-    return this.duration;
-  }
+    if (this.startDate === undefined) {
+      console.log(`Getting duration of GameLog with no startDate set`);
+    }
 
-  public setDuration(newDuration: number) {
-    this.duration = newDuration;
+    const fromInMilliseconds = new Date(
+      this.startDate ?? new Date().getTime()
+    ).getTime();
+    const untilInMilliseconds = new Date(
+      this.endDate ?? new Date().getTime()
+    ).getTime();
+
+    return Math.round(
+      Math.abs(fromInMilliseconds - untilInMilliseconds) / 1000
+    );
   }
 
   public setStartDate(date: Date) {
-    this.startDate = date;
+    console.log(
+      `Setting start date to ${date} as ${date.getTime()} milliseconds`
+    );
+    this.startDate = date.getTime();
   }
 
   public getStartDate(): Date | undefined {
-    return this.startDate;
+    if (this.startDate) {
+      return new Date(this.startDate);
+    } else {
+      return undefined;
+    }
   }
 
   public setEndDate(date: Date) {
-    this.endDate = date;
+    this.endDate = date.getMilliseconds();
   }
 
   public getEndDate(): Date | undefined {
-    return this.endDate;
+    if (this.endDate) {
+      return new Date(this.endDate);
+    } else {
+      return undefined;
+    }
   }
 
   public addEntry(entry: Entry) {

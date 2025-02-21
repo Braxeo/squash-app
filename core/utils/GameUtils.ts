@@ -102,17 +102,5 @@ export const gameUtils = (gameLog: GameLog, matchRules: MatchRules) => {
     }
   };
 
-  const updateGameDuration = (newDuration: number) => {
-    // Add start date if there is none
-    if (gameLog.getStartDate() === undefined) {
-      gameLog.setStartDate(new Date());
-    }
-
-    // Update the running duration
-    gameLog.setDuration(newDuration);
-
-    // Update the end date
-    gameLog.setEndDate(new Date());
-  };
-  return { isOnGameBall, gameWinner, updateGameDuration };
+  return { isOnGameBall, gameWinner };
 };

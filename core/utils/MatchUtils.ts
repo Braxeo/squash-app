@@ -6,17 +6,9 @@ import { gameUtils } from "./GameUtils";
 import { toggleSide } from "./SideUtils";
 
 export const matchUtils = (matchDetails: MatchDetails) => {
-  const { currentGame, matchRules, gameLogs } = matchDetails;
+  const { matchRules, gameLogs } = matchDetails;
 
-  let isOnGameBall = () => false;
-  /**
-   * This is a terrible way to handle a nullable value for gameUtils, but
-   * alas here we are.
-   */
-  if (currentGame) {
-    const { isOnGameBall: _isOnGameBall } = gameUtils(currentGame, matchRules);
-    isOnGameBall = _isOnGameBall;
-  }
+  const getCurrentGame = () => matchDetails.currentGame;
 
   /**
    *
@@ -31,13 +23,14 @@ export const matchUtils = (matchDetails: MatchDetails) => {
     const { player1Games, player2Games } = matchDetails;
     const gamesPerMatch = matchRules.getGamesPerMatch();
     const gamesToBeOnMatchPoint = Math.floor(gamesPerMatch / 2);
+    const currentGame = getCurrentGame();
 
     if (
       currentGame !== undefined &&
       (player1Games === gamesToBeOnMatchPoint ||
         player2Games === gamesToBeOnMatchPoint)
     ) {
-      return isOnGameBall();
+      return gameUtils(currentGame, matchRules).isOnGameBall();
     } else {
       return false;
     }
@@ -52,12 +45,13 @@ export const matchUtils = (matchDetails: MatchDetails) => {
    * @returns Display text for if the match is currently on game or match ball
    */
   const calculateGameOrMatchBallText = () => {
+    const currentGame = getCurrentGame();
     if (currentGame === undefined) {
       return undefined;
-    } else if (isOnGameBall()) {
-      return "Game Ball";
     } else if (isOnMatchBall()) {
       return "Match Ball";
+    } else if (gameUtils(currentGame, matchRules).isOnGameBall()) {
+      return "Game Ball";
     } else {
       return undefined;
     }
@@ -69,33 +63,68 @@ export const matchUtils = (matchDetails: MatchDetails) => {
    * @returns The PlayerId of the winner of the match, undefined otherwise
    */
   const calculateMatchWinningPlayer = (): number | undefined => {
-    const { player1, player1Games, player2, player2Games, matchRules } =
-      matchDetails;
+    const {
+      player1,
+      player1Games,
+      player2,
+      player2Games,
+      matchRules,
+      currentGame,
+    } = matchDetails;
+    // The total games in a match
     const gamesPerMatch = matchRules.getGamesPerMatch();
+    // The amount of games a player must win to win the match
     const gamesToHaveWon = Math.ceil(gamesPerMatch / 2);
 
+    // Check if they have won based on won games
     if (player1Games === gamesToHaveWon) {
       return player1.getPlayerId();
     } else if (player2Games === gamesToHaveWon) {
       return player2.getPlayerId();
     }
 
+    // Check if we're on the final game
+    const isOnFinalGame = [player1Games, player2Games].includes(
+      gamesToHaveWon - 1
+    );
+
+    // Check if they have won based on won games + the current game
+    if (currentGame && isOnFinalGame) {
+      // Check if we have an active game with a winner
+      const { gameWinner } = gameUtils(currentGame, matchRules);
+      const winnerOfCurrentGame = gameWinner();
+
+      console.log(winnerOfCurrentGame);
+
+      if (
+        player1Games === gamesToHaveWon - 1 &&
+        winnerOfCurrentGame === player1.getPlayerId()
+      ) {
+        return player1.getPlayerId();
+      } else if (
+        player2Games === gamesToHaveWon - 1 &&
+        winnerOfCurrentGame === player2.getPlayerId()
+      ) {
+        return player2.getPlayerId();
+      }
+    }
+
     return undefined;
   };
 
   const archiveCurrentGame = () => {
+    const currentGame = getCurrentGame();
     if (currentGame) {
       gameLogs.push(currentGame);
     }
     matchDetails.currentGame = undefined;
-    console.log(`Testing old current: ${currentGame}`);
-    console.log(`Testing new current: ${matchDetails.currentGame}`);
   };
 
   const startNextGame = (server: Player, side: Side) => {
     archiveCurrentGame();
     matchDetails.currentGame = new GameLog();
-    currentGame?.addEntry(
+    getCurrentGame()?.setStartDate(new Date());
+    getCurrentGame()?.addEntry(
       new Entry(
         server.getPlayerId(),
         // Toggle side so we start on the expected side
@@ -106,7 +135,8 @@ export const matchUtils = (matchDetails: MatchDetails) => {
   };
 
   const getCurrentGameDuration = (): number => {
-    return currentGame?.getDuration() ?? 0;
+    console.log(`Current Game Duration: ${getCurrentGame()?.getDuration()}`);
+    return getCurrentGame()?.getDuration() ?? 0;
   };
 
   /**
@@ -116,7 +146,7 @@ export const matchUtils = (matchDetails: MatchDetails) => {
   const getMatchDuration = (): number => {
     return (
       gameLogs.reduce((total, log) => total + log.getDuration(), 0) +
-      (currentGame?.getDuration() ?? 0)
+      (getCurrentGame()?.getDuration() ?? 0)
     );
   };
 

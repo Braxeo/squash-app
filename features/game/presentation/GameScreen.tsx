@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { Text, View } from "react-native";
 import { styles } from "./GameScreenStyle";
 import { useGameScreenViewModel } from "./hooks/useGameScreenViewModel";
@@ -30,22 +30,9 @@ const GameScreen: React.FC<Props> = ({ route }) => {
     handleToggleServingSide,
     handleUndo,
     handleFinish,
-    duration,
-    setDuration,
+    gameDuration,
+    matchDuration,
   } = useGameScreenViewModel(route.params.matchDetails);
-
-  const [currentGameTime, setCurrentGameTime] = useState(duration);
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrentGameTime((prev: number) => {
-        setDuration(prev + 1);
-        return prev + 1;
-      });
-    }, 1000);
-
-    return () => clearInterval(interval); // Cleanup on unmount
-  }, [setDuration]);
 
   const player1TileProps = {
     name: player1.getPlayerName(),
@@ -75,6 +62,10 @@ const GameScreen: React.FC<Props> = ({ route }) => {
     player1Games: games_p1,
     player2Games: games_p2,
   };
+
+  useEffect(() => {
+    console.log(gameDuration);
+  }, [gameDuration]);
 
   return (
     <View style={styles.container}>
@@ -129,12 +120,12 @@ const GameScreen: React.FC<Props> = ({ route }) => {
         <View style={styles.timerBox}>
           <TimerTile
             title="Match Time"
-            seconds={15 * 60}
+            seconds={matchDuration}
             iconSide={Side.LEFT}
           />
           <TimerTile
             title="Game Time"
-            seconds={currentGameTime}
+            seconds={gameDuration}
             iconSide={Side.RIGHT}
           />
         </View>

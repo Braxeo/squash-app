@@ -6,7 +6,7 @@ import GameScreen from "../../features/game/presentation/GameScreen";
 import { MatchDetails } from "../models/MatchDetails";
 
 export type AppStackParamList = {
-  MatchCreation: undefined; // No params for MatchCreationScreen
+  MatchCreation: undefined;
   Warmup: {
     matchDetails: MatchDetails;
   };

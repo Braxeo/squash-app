@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { PointsBy, Side } from "../../../../core/constants/Enums";
 import { MatchValidationError } from "@/core/errors/MatchValidationError";
 import { GameValidationError } from "@/core/errors/GameValidationError";
@@ -9,8 +9,16 @@ import { GameConfigurationError } from "@/core/errors/GameConfigurationError";
 import { gameLogUtils } from "@/core/utils/GameLogUtils";
 import { matchUtils } from "@/core/utils/MatchUtils";
 import { gameUtils } from "@/core/utils/GameUtils";
+import { StackNavigationProp } from "@react-navigation/stack";
+import { AppStackParamList } from "@/core/navigation/AppNavigator";
+import { useNavigation } from "@react-navigation/native";
 
 export const useGameScreenViewModel = (matchDetails: MatchDetails) => {
+  type GameScreenNavigationProp = StackNavigationProp<
+    AppStackParamList,
+    "GameScreen"
+  >;
+
   const {
     player1,
     player2,
@@ -32,7 +40,7 @@ export const useGameScreenViewModel = (matchDetails: MatchDetails) => {
     undo,
   } = gameLogUtils(currentGame);
 
-  const { gameWinner, updateGameDuration } = gameUtils(currentGame, matchRules);
+  const { gameWinner } = gameUtils(currentGame, matchRules);
 
   const {
     calculateGameOrMatchBallText,
@@ -71,6 +79,13 @@ export const useGameScreenViewModel = (matchDetails: MatchDetails) => {
 
   // Winner of the game
   const [winnerText, setWinnerText] = useState<string | undefined>();
+
+  const navigation = useNavigation<GameScreenNavigationProp>();
+
+  const [gameDuration, setGameDuration] = useState(
+    getCurrentGameDuration() ?? 0
+  );
+  const [matchDuration, setMatchDuration] = useState(getMatchDuration() ?? 0);
 
   // Function to handle point win
   const handlePointWin = (playerId: number) => {
@@ -123,6 +138,13 @@ export const useGameScreenViewModel = (matchDetails: MatchDetails) => {
 
     // Check if the player has won!
     updatePlayerWonState();
+
+    updateGameTime();
+  };
+
+  const updateGameTime = () => {
+    setGameDuration(getCurrentGameDuration() ?? 0);
+    setMatchDuration(getMatchDuration() ?? 0);
   };
 
   const handleToggleServingSide = () => {
@@ -145,14 +167,44 @@ export const useGameScreenViewModel = (matchDetails: MatchDetails) => {
     }
   };
 
-  const setDuration = (newDuration: number) => {
-    updateGameDuration(newDuration);
-  };
-
   const handleFinish = () => {
+    if (servingPlayer === player1.getPlayerId()) {
+      matchDetails.player1Games++;
+    } else {
+      matchDetails.player2Games++;
+    }
+
     // Archive game
     archiveCurrentGame();
     // Move to match summary screen
+
+    const hasNextGame = true;
+
+    if (hasNextGame) {
+      startNextGame(
+        servingPlayer === player1.getPlayerId() ? player1 : player2,
+        Side.RIGHT
+      );
+
+      refreshStateFromModels();
+    } else {
+      navigation.popTo("MatchCreation");
+    }
+  };
+
+  const refreshStateFromModels = () => {
+    setPlayer1Score(0);
+    setPlayer2Score(0);
+
+    setPlayer1Games(matchDetails.player1Games);
+    setPlayer2Games(matchDetails.player2Games);
+
+    setServingSide(Side.RIGHT);
+    setServingPlayer(getServingPlayer() ?? player1.getPlayerId());
+    setGameOrMatchBallText(undefined);
+    setWinnerText(undefined);
+
+    updateGameTime();
   };
 
   const handleUndo = () => {
@@ -233,7 +285,7 @@ export const useGameScreenViewModel = (matchDetails: MatchDetails) => {
     handleToggleServingSide,
     handleUndo,
     handleFinish,
-    duration: currentGame.getDuration() ?? 0,
-    setDuration,
+    gameDuration,
+    matchDuration,
   };
 };

@@ -70,7 +70,7 @@ export const useWarmupScreenViewModel = (matchDetails: MatchDetails) => {
 
   const {
     timerText,
-    updateTimer,
+    startTimer,
     isTimerRunning,
     setIsTimerRunning,
     isTimerFinished,
@@ -85,7 +85,7 @@ export const useWarmupScreenViewModel = (matchDetails: MatchDetails) => {
     handleTimerStart,
     handleTimerSkip,
     handleStartGame,
-    updateTimer,
+    startTimer,
     player1: player1.getPlayerName(),
     player2: player2.getPlayerName(),
     timerText,

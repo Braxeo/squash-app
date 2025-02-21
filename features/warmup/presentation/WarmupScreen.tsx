@@ -13,7 +13,7 @@ const WarmupScreen: React.FC<Props> = ({ route }) => {
     handleTimerStart,
     handleTimerSkip,
     handleStartGame,
-    updateTimer,
+    startTimer,
     player1,
     player2,
     timerText,
@@ -22,7 +22,7 @@ const WarmupScreen: React.FC<Props> = ({ route }) => {
   } = useWarmupScreenViewModel(route.params.matchDetails);
 
   // Effect to handle the timer logic
-  useEffect(updateTimer, [updateTimer]);
+  useEffect(startTimer, [startTimer]);
 
   return (
     <View style={styles.container}>

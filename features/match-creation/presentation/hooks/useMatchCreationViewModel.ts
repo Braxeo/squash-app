@@ -60,6 +60,7 @@ export const useMatchCreationViewModel = () => {
 
   // Function to handle form submission
   const handleSubmit = () => {
+    console.log("Handling Submit");
     if (!sanitizePlayerName(player1)) {
       setPlayer1Error("Player name cannot be empty");
       return;
@@ -100,7 +101,7 @@ export const useMatchCreationViewModel = () => {
       if (error instanceof GameConfigurationError) {
         console.error("Game Configuration Error", error.message);
       } else {
-        console.error("An unexpected error occured", error);
+        console.error("An unexpected error occurred", error);
       }
     }
   };

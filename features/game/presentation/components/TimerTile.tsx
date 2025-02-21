@@ -19,17 +19,20 @@ export const TimerTile: React.FC<TimerTileProps> = ({
 }) => {
   const onTimerFinished = () => {};
 
-  const { timerText, updateTimer, setIsTimerRunning } = useTimer({
+  const { timerText, startTimer, setIsTimerRunning, setTime } = useTimer({
     seconds: seconds,
     direction: Side.UP,
     onTimerFinished: onTimerFinished,
   });
 
-  useEffect(updateTimer, [updateTimer]);
+  // Start the timer
+  useEffect(() => startTimer(), [startTimer]);
 
-  useEffect(() => {
-    setIsTimerRunning(true);
-  }, [setIsTimerRunning]);
+  // Update state so we are running
+  useEffect(() => setIsTimerRunning(true), [setIsTimerRunning]);
+
+  // UseEffect to update the timer on
+  useEffect(() => setTime(seconds), [setTime, seconds]);
 
   return (
     <View style={styles.tileContainer}>
@@ -54,7 +57,9 @@ export const TimerTile: React.FC<TimerTileProps> = ({
           ]}
         >
           <Text style={styles.title}>{title}</Text>
-          <Text style={styles.number}>{timerText}</Text>
+          <Text key={timerText} style={styles.number}>
+            {timerText}
+          </Text>
         </View>
         {iconSide === Side.RIGHT && (
           <MaterialIcons

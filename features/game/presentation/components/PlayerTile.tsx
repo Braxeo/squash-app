@@ -10,8 +10,8 @@ type PlayerTileProps = {
   name: string;
   score: number;
   side: Side | undefined;
-  handlePointWin: () => void;
-  handleOnPress: () => void;
+  handlePointWin: (() => void) | undefined;
+  handleOnPress: (() => void) | undefined;
 };
 
 export const PlayerTile: React.FC<PlayerTileProps> = ({
@@ -33,6 +33,7 @@ export const PlayerTile: React.FC<PlayerTileProps> = ({
 
   return (
     <TouchableOpacity
+      disabled={handleOnPress === undefined}
       onPress={handleOnPress}
       style={[
         styles.playerSection,
@@ -42,12 +43,14 @@ export const PlayerTile: React.FC<PlayerTileProps> = ({
       <Text style={styles.playerName}>{name}</Text>
       {servingIcon}
       <Text style={styles.score}>{score}</Text>
-      <BasicButton
-        buttonStyle={{ minWidth: "auto" }}
-        textStyle={[typography.buttonText1, { textAlign: "center" }]}
-        title="Win Point"
-        onPress={handlePointWin}
-      />
+      {handlePointWin && (
+        <BasicButton
+          buttonStyle={{ minWidth: "auto" }}
+          textStyle={[typography.buttonText1, { textAlign: "center" }]}
+          title="Win Point"
+          onPress={handlePointWin}
+        />
+      )}
     </TouchableOpacity>
   );
 };

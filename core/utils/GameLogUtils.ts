@@ -36,8 +36,6 @@ export const gameLogUtils = (gameLog: GameLog) => {
     }
 
     gameLog.getEntries().pop();
-
-    console.log(gameLog.describe());
   };
 
   const setServingPlayerAndSide = (playerId: number, side: Side) => {

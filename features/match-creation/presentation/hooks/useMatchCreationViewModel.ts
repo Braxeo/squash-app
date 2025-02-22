@@ -60,7 +60,6 @@ export const useMatchCreationViewModel = () => {
 
   // Function to handle form submission
   const handleSubmit = () => {
-    console.log("Handling Submit");
     if (!sanitizePlayerName(player1)) {
       setPlayer1Error("Player name cannot be empty");
       return;

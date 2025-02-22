@@ -3,6 +3,7 @@ import { createStackNavigator } from "@react-navigation/stack";
 import MatchCreationScreen from "../../features/match-creation/presentation/MatchCreationScreen";
 import WarmupScreen from "../../features/warmup/presentation/WarmupScreen";
 import GameScreen from "../../features/game/presentation/GameScreen";
+import GameSummary from "../../features/game-summary/GameSummaryScreen";
 import { MatchDetails } from "../models/MatchDetails";
 
 export type AppStackParamList = {
@@ -11,6 +12,9 @@ export type AppStackParamList = {
     matchDetails: MatchDetails;
   };
   GameScreen: {
+    matchDetails: MatchDetails;
+  };
+  GameSummary: {
     matchDetails: MatchDetails;
   };
 };
@@ -34,6 +38,11 @@ const AppNavigator: React.FC = () => {
         name="GameScreen"
         component={GameScreen}
         options={{ title: "Game" }}
+      />
+      <Stack.Screen
+        name="GameSummary"
+        component={GameSummary}
+        options={{ title: "Game Summary" }}
       />
     </Stack.Navigator>
   );

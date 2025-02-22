@@ -6,11 +6,19 @@ export const styles = StyleSheet.create({
     padding: 20,
     backgroundColor: "#f5f5f5",
   },
+  scrollView: {
+    flexGrow: 1,
+    marginBottom: 25,
+  },
   header: {
     fontSize: 24,
     fontWeight: "bold",
     marginBottom: 20,
     textAlign: "center",
+  },
+  label_no_margin: {
+    fontSize: 16,
+    fontWeight: "500",
   },
   label: {
     fontSize: 16,

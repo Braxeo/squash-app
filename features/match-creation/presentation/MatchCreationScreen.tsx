@@ -1,5 +1,5 @@
 import React from "react";
-import { Text, TextInput, View, Button } from "react-native";
+import { Text, TextInput, View, Button, ScrollView } from "react-native";
 import { styles } from "./MatchCreationScreenStyle";
 import { useMatchCreationViewModel } from "./hooks/useMatchCreationViewModel";
 import { PointsByPicker } from "./components/PointsByPicker";
@@ -29,73 +29,78 @@ const MatchCreationScreen: React.FC = () => {
 
   return (
     <View style={styles.container}>
-      <Text style={[styles.label, player1Error ? styles.errorText : null]}>
-        Player 1
-      </Text>
-      <TextInput
-        style={[styles.input, player1Error ? styles.errorText : null]}
-        placeholder="Enter Player 1 Name"
-        value={player1}
-        onChangeText={setPlayer1}
-      />
-      {player1Error && (
-        <Text style={[styles.label, styles.errorText]}>{player1Error}</Text>
-      )}
-
-      <Text style={[styles.label, player2Error ? styles.errorText : null]}>
-        Player 2
-      </Text>
-      <TextInput
-        style={[styles.input, player2Error ? styles.errorText : null]}
-        placeholder="Enter Player 2 Name"
-        value={player2}
-        onChangeText={setPlayer2}
-      />
-      {player2Error && (
-        <Text style={[styles.label, styles.errorText]}>{player2Error}</Text>
-      )}
-
-      <Text
-        style={[styles.label, gamesPerMatchError ? styles.errorText : null]}
-      >
-        Best Of
-      </Text>
-      <TextInput
-        style={[styles.input, gamesPerMatchError ? styles.errorText : null]}
-        keyboardType="numeric"
-        value={String(gamesPerMatch)}
-        onChangeText={(text) => setGamesPerMatch(Number(text))}
-      />
-      {gamesPerMatchError && (
-        <Text style={[styles.label, styles.errorText]}>
-          {gamesPerMatchError}
+      <ScrollView style={styles.scrollView}>
+        <Text
+          style={[
+            styles.label_no_margin,
+            player1Error ? styles.errorText : null,
+          ]}
+        >
+          Player 1
         </Text>
-      )}
+        <TextInput
+          style={[styles.input, player1Error ? styles.errorText : null]}
+          placeholder="Enter Player 1 Name"
+          value={player1}
+          onChangeText={setPlayer1}
+        />
+        {player1Error && (
+          <Text style={[styles.label, styles.errorText]}>{player1Error}</Text>
+        )}
 
-      <Text style={styles.label}>Points Per Game</Text>
-      <TextInput
-        style={styles.input}
-        keyboardType="numeric"
-        value={String(pointsPerGame)}
-        onChangeText={(text) => setPointsPerGame(Number(text))}
-      />
+        <Text style={[styles.label, player2Error ? styles.errorText : null]}>
+          Player 2
+        </Text>
+        <TextInput
+          style={[styles.input, player2Error ? styles.errorText : null]}
+          placeholder="Enter Player 2 Name"
+          value={player2}
+          onChangeText={setPlayer2}
+        />
+        {player2Error && (
+          <Text style={[styles.label, styles.errorText]}>{player2Error}</Text>
+        )}
 
-      <Text style={styles.label}>Warmup Minutes</Text>
-      <TextInput
-        style={styles.input}
-        keyboardType="numeric"
-        value={String(warmupMinutes)}
-        onChangeText={(text) => setWarmupMinutes(Number(text))}
-      />
+        <Text
+          style={[styles.label, gamesPerMatchError ? styles.errorText : null]}
+        >
+          Best Of
+        </Text>
+        <TextInput
+          style={[styles.input, gamesPerMatchError ? styles.errorText : null]}
+          keyboardType="numeric"
+          value={String(gamesPerMatch)}
+          onChangeText={(text) => setGamesPerMatch(Number(text))}
+        />
+        {gamesPerMatchError && (
+          <Text style={[styles.label, styles.errorText]}>
+            {gamesPerMatchError}
+          </Text>
+        )}
 
-      <PointsByPicker pointsBy={pointsBy} setPointsBy={setPointsBy} />
+        <Text style={styles.label}>Points Per Game</Text>
+        <TextInput
+          style={styles.input}
+          keyboardType="numeric"
+          value={String(pointsPerGame)}
+          onChangeText={(text) => setPointsPerGame(Number(text))}
+        />
 
-      <WinningRequirementPicker
-        winningRequirement={winningRequirement}
-        setWinningRequirement={setWinningRequirement}
-      />
+        <Text style={styles.label}>Warmup Minutes</Text>
+        <TextInput
+          style={styles.input}
+          keyboardType="numeric"
+          value={String(warmupMinutes)}
+          onChangeText={(text) => setWarmupMinutes(Number(text))}
+        />
 
-      <View style={{ height: 25 }} />
+        <PointsByPicker pointsBy={pointsBy} setPointsBy={setPointsBy} />
+
+        <WinningRequirementPicker
+          winningRequirement={winningRequirement}
+          setWinningRequirement={setWinningRequirement}
+        />
+      </ScrollView>
       <Button title="Begin Warmup" onPress={handleSubmit} />
     </View>
   );

@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { Text, View } from "react-native";
 import { useGameScreenViewModel } from "./hooks/useGameScreenViewModel";
 import { RouteProp } from "@react-navigation/native";
@@ -44,9 +44,9 @@ const GameScreen: React.FC<Props> = ({ route }) => {
     handlePointWin: () => {
       handlePointWin(player1.getPlayerId());
     },
-    handleOnPress: () => {
-      servingPlayer === player1.getPlayerId() && handleToggleServingSide();
-    },
+    handleOnPress: servingPlayer === player1.getPlayerId() ? (() => {
+      handleToggleServingSide();
+    }) : undefined,
   };
 
   const player2TileProps = {
@@ -56,19 +56,15 @@ const GameScreen: React.FC<Props> = ({ route }) => {
     handlePointWin: () => {
       handlePointWin(player2.getPlayerId());
     },
-    handleOnPress: () => {
-      servingPlayer === player2.getPlayerId() && handleToggleServingSide();
-    },
+    handleOnPress: servingPlayer === player2.getPlayerId() ? (() => {
+      handleToggleServingSide();
+    }) : undefined,
   };
 
   const gameScoreTileProps = {
     player1Games: games_p1,
     player2Games: games_p2,
   };
-
-  useEffect(() => {
-    console.log(gameDuration);
-  }, [gameDuration]);
 
   return (
     <View style={styles.container}>

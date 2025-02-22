@@ -33,9 +33,6 @@ export class GameLog {
   }
 
   public setStartDate(date: Date) {
-    console.log(
-      `Setting start date to ${date} as ${date.getTime()} milliseconds`
-    );
     this.startDate = date.getTime();
   }
 

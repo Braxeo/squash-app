@@ -94,8 +94,6 @@ export const matchUtils = (matchDetails: MatchDetails) => {
       const { gameWinner } = gameUtils(currentGame, matchRules);
       const winnerOfCurrentGame = gameWinner();
 
-      console.log(winnerOfCurrentGame);
-
       if (
         player1Games === gamesToHaveWon - 1 &&
         winnerOfCurrentGame === player1.getPlayerId()
@@ -135,7 +133,6 @@ export const matchUtils = (matchDetails: MatchDetails) => {
   };
 
   const getCurrentGameDuration = (): number => {
-    console.log(`Current Game Duration: ${getCurrentGame()?.getDuration()}`);
     return getCurrentGame()?.getDuration() ?? 0;
   };
 

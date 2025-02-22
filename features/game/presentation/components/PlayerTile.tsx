@@ -1,9 +1,10 @@
 import { TouchableOpacity } from "react-native";
-import { styles } from "../GameScreenStyle";
 import { Text } from "react-native";
-import { Button } from "react-native";
 import React from "react";
 import { Side } from "../../../../core/constants/Enums";
+import { useGameScreenStyle } from "../hooks/useGameScreenStyle";
+import { BasicButton } from "@/core/components/BasicButton";
+import typography from "@/core/typography/Typography";
 
 type PlayerTileProps = {
   name: string;
@@ -20,6 +21,8 @@ export const PlayerTile: React.FC<PlayerTileProps> = ({
   handlePointWin,
   handleOnPress,
 }: PlayerTileProps) => {
+  const styles = useGameScreenStyle();
+
   const servingIcon = side ? (
     side === Side.LEFT ? (
       <Text>L</Text>
@@ -29,11 +32,22 @@ export const PlayerTile: React.FC<PlayerTileProps> = ({
   ) : undefined;
 
   return (
-    <TouchableOpacity onPress={handleOnPress} style={styles.playerSection}>
+    <TouchableOpacity
+      onPress={handleOnPress}
+      style={[
+        styles.playerSection,
+        side !== undefined ? styles.playerActive : undefined,
+      ]}
+    >
       <Text style={styles.playerName}>{name}</Text>
       {servingIcon}
       <Text style={styles.score}>{score}</Text>
-      <Button title="Win Point" onPress={handlePointWin} />
+      <BasicButton
+        buttonStyle={{ minWidth: "auto" }}
+        textStyle={[typography.buttonText1, { textAlign: "center" }]}
+        title="Win Point"
+        onPress={handlePointWin}
+      />
     </TouchableOpacity>
   );
 };

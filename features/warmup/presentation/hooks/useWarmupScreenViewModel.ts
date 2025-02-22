@@ -64,7 +64,7 @@ export const useWarmupScreenViewModel = (matchDetails: MatchDetails) => {
 
   const handleStartGame = () => {
     promptForServer(() => {
-      navigation.navigate("GameScreen", { matchDetails });
+      navigation.replace("GameScreen", { matchDetails });
     });
   };
 

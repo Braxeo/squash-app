@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { PointsBy, Side } from "../../../../core/constants/Enums";
 import { MatchValidationError } from "@/core/errors/MatchValidationError";
 import { GameValidationError } from "@/core/errors/GameValidationError";
@@ -47,7 +47,6 @@ export const useGameScreenViewModel = (matchDetails: MatchDetails) => {
     calculateMatchWinningPlayer,
     getMatchDuration,
     getCurrentGameDuration,
-    startNextGame,
     archiveCurrentGame,
   } = matchUtils(matchDetails);
 
@@ -57,8 +56,6 @@ export const useGameScreenViewModel = (matchDetails: MatchDetails) => {
   const [score_p2, setPlayer2Score] = useState(
     getPointsForPlayer(player2.getPlayerId())
   );
-  const [games_p1, setPlayer1Games] = useState(player1Games);
-  const [games_p2, setPlayer2Games] = useState(player2Games);
 
   // Get stored last serving side from gameLog, toggle as this was where they scored their last point from,
   // otherwise default to Right side
@@ -178,33 +175,7 @@ export const useGameScreenViewModel = (matchDetails: MatchDetails) => {
     archiveCurrentGame();
     // Move to match summary screen
 
-    const hasNextGame = true;
-
-    if (hasNextGame) {
-      startNextGame(
-        servingPlayer === player1.getPlayerId() ? player1 : player2,
-        Side.RIGHT
-      );
-
-      refreshStateFromModels();
-    } else {
-      navigation.popTo("MatchCreation");
-    }
-  };
-
-  const refreshStateFromModels = () => {
-    setPlayer1Score(0);
-    setPlayer2Score(0);
-
-    setPlayer1Games(matchDetails.player1Games);
-    setPlayer2Games(matchDetails.player2Games);
-
-    setServingSide(Side.RIGHT);
-    setServingPlayer(getServingPlayer() ?? player1.getPlayerId());
-    setGameOrMatchBallText(undefined);
-    setWinnerText(undefined);
-
-    updateGameTime();
+    navigation.replace("GameSummary", { matchDetails });
   };
 
   const handleUndo = () => {
@@ -275,8 +246,8 @@ export const useGameScreenViewModel = (matchDetails: MatchDetails) => {
     player2,
     score_p1,
     score_p2,
-    games_p1,
-    games_p2,
+    games_p1: player1Games,
+    games_p2: player2Games,
     servingSide,
     servingPlayer,
     gameOrMatchBallText,

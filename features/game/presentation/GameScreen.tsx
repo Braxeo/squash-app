@@ -1,6 +1,5 @@
 import React, { useEffect } from "react";
 import { Text, View } from "react-native";
-import { styles } from "./GameScreenStyle";
 import { useGameScreenViewModel } from "./hooks/useGameScreenViewModel";
 import { RouteProp } from "@react-navigation/native";
 import { AppStackParamList } from "@/core/navigation/AppNavigator";
@@ -10,11 +9,15 @@ import { BasicButton, basicButtonStyle } from "@/core/components/BasicButton";
 import { TimerTile } from "./components/TimerTile";
 import { Side } from "../../../core/constants/Enums";
 import BasicModal from "@/core/components/BasicModal";
+import { useGameScreenStyle } from "./hooks/useGameScreenStyle";
 
 type GameScreenRouteProp = RouteProp<AppStackParamList, "GameScreen">;
 type Props = { route: GameScreenRouteProp };
 
 const GameScreen: React.FC<Props> = ({ route }) => {
+
+  const styles = useGameScreenStyle();
+
   const {
     player1,
     player2,

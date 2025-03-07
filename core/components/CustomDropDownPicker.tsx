@@ -1,6 +1,6 @@
 import React, { Dispatch, SetStateAction, useState } from "react";
+import { StyleSheet } from "react-native";
 import DropDownPicker from "react-native-dropdown-picker";
-import { styles } from "../../features/match-creation/presentation/MatchCreationScreenStyle";
 
 interface CustomDropDownPickerProps {
   selectedValue: any;
@@ -19,8 +19,17 @@ export const CustomDropDownPicker: React.FC<CustomDropDownPickerProps> = ({
     value: `${v}`,
   }));
 
+  const styles = StyleSheet.create({
+    picker: {
+      height: 50,
+      width: "100%",
+      zIndex: 1,
+    },
+  });
+
   return (
     <DropDownPicker
+      listMode="SCROLLVIEW"
       open={open}
       value={selectedValue}
       items={itemList}

@@ -1,8 +1,8 @@
 import React from "react";
 import { Text } from "react-native";
 import { CustomDropDownPicker } from "../../../../core/components/CustomDropDownPicker";
-import { styles } from "../MatchCreationScreenStyle";
 import { WinningRequirement } from "@/core/constants/Enums";
+import { useMatchCreationStyle } from "../hooks/useMatchCreationStyle";
 
 interface WinningRequirementDropDownPickerProps {
   winningRequirement: WinningRequirement;
@@ -12,6 +12,7 @@ interface WinningRequirementDropDownPickerProps {
 export const WinningRequirementPicker: React.FC<
   WinningRequirementDropDownPickerProps
 > = ({ winningRequirement, setWinningRequirement }) => {
+  const styles = useMatchCreationStyle();
   return (
     <>
       <Text style={styles.label}>Win Match By</Text>

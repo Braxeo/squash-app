@@ -1,9 +1,9 @@
 import React from "react";
 import { Text, TextInput, View, Button, ScrollView } from "react-native";
-import { styles } from "./MatchCreationScreenStyle";
 import { useMatchCreationViewModel } from "./hooks/useMatchCreationViewModel";
 import { PointsByPicker } from "./components/PointsByPicker";
 import { WinningRequirementPicker } from "./components/WinningRequirementPicker";
+import { useMatchCreationStyle } from "./hooks/useMatchCreationStyle";
 
 const MatchCreationScreen: React.FC = () => {
   const {
@@ -27,9 +27,16 @@ const MatchCreationScreen: React.FC = () => {
     setWinningRequirement,
   } = useMatchCreationViewModel();
 
+  const styles = useMatchCreationStyle();
+
   return (
     <View style={styles.container}>
-      <ScrollView style={styles.scrollView}>
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        overScrollMode="never"
+        persistentScrollbar={false}
+        style={styles.scrollView}
+      >
         <Text
           style={[
             styles.label_no_margin,

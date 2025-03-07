@@ -1,8 +1,8 @@
 import React from "react";
 import { Text } from "react-native";
 import { CustomDropDownPicker } from "../../../../core/components/CustomDropDownPicker";
-import { styles } from "../MatchCreationScreenStyle";
 import { PointsBy } from "@/core/constants/Enums";
+import { useMatchCreationStyle } from "../hooks/useMatchCreationStyle";
 
 interface PointsPerDropDownPickerProps {
   pointsBy: PointsBy;
@@ -13,6 +13,7 @@ export const PointsByPicker: React.FC<PointsPerDropDownPickerProps> = ({
   pointsBy,
   setPointsBy,
 }) => {
+  const styles = useMatchCreationStyle();
   return (
     <>
       <Text style={styles.label}>Win Each Point By</Text>

@@ -2,6 +2,7 @@ import { Side } from "@/core/constants/Enums";
 import { GameConfigurationError } from "@/core/errors/GameConfigurationError";
 import { MatchDetails } from "@/core/models/MatchDetails";
 import { AppStackParamList } from "@/core/navigation/AppNavigator";
+import { storageUtils } from "@/core/storage/storageUtils";
 import { gameLogUtils } from "@/core/utils/GameLogUtils";
 import { matchUtils } from "@/core/utils/MatchUtils";
 import { StackNavigationProp } from "@react-navigation/stack";
@@ -15,8 +16,15 @@ export const useGameSummaryViewModel = (matchDetails: MatchDetails) => {
 
   const { player1, player2, player1Games, player2Games } = matchDetails;
 
-  const { getMatchDuration, calculateMatchWinningPlayer, startNextGame } =
-    matchUtils(matchDetails);
+  const { storeValue, getValue } = storageUtils();
+
+  const {
+    getMatchDuration,
+    calculateMatchWinningPlayer,
+    startNextGame,
+    getFirstGame,
+    getGameScoreDescription,
+  } = matchUtils(matchDetails);
 
   const lastGame = matchDetails.gameLogs.at(matchDetails.gameLogs.length - 1);
 
@@ -41,6 +49,14 @@ export const useGameSummaryViewModel = (matchDetails: MatchDetails) => {
 
   const navigation = useNavigation<GameSummaryNavigationProp>();
 
+  const emailBody = `
+          Match Date: ${(
+            getFirstGame()?.getStartDate() ?? new Date()
+          ).toLocaleDateString("en-GB")}
+          Players: ${player1.getPlayerName()} (${player1Games}) vs ${player2.getPlayerName()} (${player2Games})
+          Games: ${getGameScoreDescription()}
+        `;
+
   return {
     player1,
     player2,
@@ -53,5 +69,8 @@ export const useGameSummaryViewModel = (matchDetails: MatchDetails) => {
     handleCtaButtonClick: handleCtaButtonClick,
     breakDuration: 0,
     matchDuration: getMatchDuration(),
+    emailBody,
+    getEmail: () => getValue("email"),
+    setEmail: (value: string) => storeValue("email", value),
   };
 };

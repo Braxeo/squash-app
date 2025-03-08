@@ -147,6 +147,26 @@ export const matchUtils = (matchDetails: MatchDetails) => {
     );
   };
 
+  const getFirstGame = (): GameLog | undefined =>
+    gameLogs.reduce((r, o) =>
+      (o.getStartDate() ?? new Date()) < (r.getStartDate() ?? new Date())
+        ? o
+        : r
+    );
+
+  const getGameScoreDescription = (): string => {
+    const player1Id = matchDetails.player1.getPlayerId();
+    const player2Id = matchDetails.player2.getPlayerId();
+    return gameLogs
+      .map((log) => {
+        const { getPointsForPlayer } = gameUtils(log, matchRules);
+        return `${getPointsForPlayer(player1Id)}-${getPointsForPlayer(
+          player2Id
+        )}`;
+      })
+      .join(", ");
+  };
+
   return {
     calculateGameOrMatchBallText,
     calculateMatchWinningPlayer,
@@ -154,5 +174,7 @@ export const matchUtils = (matchDetails: MatchDetails) => {
     getCurrentGameDuration,
     startNextGame,
     archiveCurrentGame,
+    getFirstGame,
+    getGameScoreDescription,
   };
 };

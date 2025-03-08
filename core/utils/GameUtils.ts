@@ -102,5 +102,5 @@ export const gameUtils = (gameLog: GameLog, matchRules: MatchRules) => {
     }
   };
 
-  return { isOnGameBall, gameWinner };
+  return { isOnGameBall, gameWinner, getPointsForPlayer };
 };

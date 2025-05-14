@@ -8,6 +8,7 @@ const inputBackground = "#E0E0E0"; // Slightly Darker Gray
 const primaryButton = "#1E88E5"; // Bright Blue
 const primaryButtonText = "#FFFFFF"; // White
 const primaryText = "#000000"; // Black
+const secondaryText = "#616161";
 const scoreText = "#000000"; // Black
 const smallLabel = "#666666"; // Dark Gray
 const cardBorder = "#D6D6D6"; // Soft Gray
@@ -20,6 +21,7 @@ const darkInputBackground = "#2A2A2A"; // Slightly Darker Gray
 const darkPrimaryButton = "#0A84FF"; // iOS-style blue for dark mode
 const darkPrimaryButtonText = "#FFFFFF"; // White remains unchanged
 const darkPrimaryText = "#ECEDEE"; // Light gray for readability
+const darkSecondaryText = "#B0BEC5";
 const darkScoreText = "#ECEDEE"; // Light gray for consistency
 const darkSmallLabel = "#9BA1A6"; // Slightly lighter gray for visibility
 const darkCardBorder = "#333"; // Darker border
@@ -34,6 +36,7 @@ export const DefinedColors = {
     primaryButton,
     primaryButtonText,
     primaryText,
+    secondaryText,
     scoreText,
     smallLabel,
     cardBorder,
@@ -47,6 +50,7 @@ export const DefinedColors = {
     primaryButton: darkPrimaryButton,
     primaryButtonText: darkPrimaryButtonText,
     primaryText: darkPrimaryText,
+    secondaryText: darkSecondaryText,
     scoreText: darkScoreText,
     smallLabel: darkSmallLabel,
     cardBorder: darkCardBorder,
@@ -62,6 +66,7 @@ export enum ColorName {
   PrimaryButton = "primaryButton",
   PrimaryButtonText = "primaryButtonText",
   PrimaryText = "primaryText",
+  SecondaryText = "secondaryText",
   ScoreText = "scoreText",
   SmallLabel = "smallLabel",
   CardBorder = "cardBorder",

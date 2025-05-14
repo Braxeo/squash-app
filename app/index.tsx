@@ -3,6 +3,7 @@ import { SafeAreaView, StyleSheet } from "react-native";
 import { createDrawerNavigator } from "@react-navigation/drawer";
 import ContactUsScreen from "@/features/contact-us/ContactUsScreen";
 import AppNavigator from "@/core/navigation/AppNavigator";
+import MatchListScreen from "@/features/match-list/presentation/MatchListScreen";
 
 const Drawer = createDrawerNavigator();
 
@@ -10,7 +11,8 @@ const Drawer = createDrawerNavigator();
 const AppEntry: React.FC = () => {
   return (
     <SafeAreaView style={styles.safeArea}>
-      <Drawer.Navigator initialRouteName="New Match">
+      <Drawer.Navigator initialRouteName="Match List">
+        <Drawer.Screen name="Match List" component={MatchListScreen} />
         <Drawer.Screen name="New Match" component={AppNavigator} />
         <Drawer.Screen name="Contact Us" component={ContactUsScreen} />
       </Drawer.Navigator>
